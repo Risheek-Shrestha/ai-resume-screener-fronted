@@ -7,7 +7,7 @@ export const getMyResume = async () => {
 }
 
 export const getResumeById = async (id:number) => {
-    const response = await api.get(`jobs/${id}`);
+    const response = await api.get(`resume/${id}`);
 
     return response.data;
 }

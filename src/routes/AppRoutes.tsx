@@ -13,23 +13,23 @@ import UploadResume from "../pages/resume/UploadResume";
 import NotFound from "../pages/NotFound";
 
 function AppRoutes() {
-    return(
+    return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Login />} />
-                <Route path="/" element={<Register />} />
-                <Route path="/" element={<AdminDashboard />} />
-                <Route path="/" element={<MyResumes />} />
-                <Route path="/" element={<ResumeScore />} />
-                <Route path="/" element={<Profile />} />
-                <Route path="/" element={<JobDetails />} />
-                <Route path="/" element={<Jobs />} />
-                <Route path="/" element={<DashBoard />} />
-                <Route path="/" element={<UploadResume />} />
-                <Route path="/" element={<NotFound />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/dashboard" element={<DashBoard />} />
+                <Route path="/jobs" element={<Jobs />} />
+                <Route path="/jobs/:id" element={<JobDetails />} />
+                <Route path="/resume" element={<MyResumes />} />
+                <Route path="/resume/upload" element={<UploadResume />} />
+                <Route path="/resume/:id/score" element={<ResumeScore />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
-    )
+    );
 }
 
 export default AppRoutes;
