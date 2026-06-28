@@ -11,6 +11,7 @@ import MyResumes from "../pages/resume/MyResumes";
 import ResumeScore from "../pages/resume/ResumeScore";
 import UploadResume from "../pages/resume/UploadResume";
 import NotFound from "../pages/NotFound";
+import Index from "../pages/Index";
 
 function AppRoutes() {
     return (
@@ -26,7 +27,8 @@ function AppRoutes() {
                 <Route path="/resume/upload" element={<UploadResume />} />
                 <Route path="/resume/:id/score" element={<ResumeScore />} />
                 <Route path="/profile" element={<Profile />} />
-                <Route path="*" element={<NotFound />} />
+                <Route path="/error" element={<NotFound />} />
+                <Route path="*" element={<Index />} />
             </Routes>
         </BrowserRouter>
     );
