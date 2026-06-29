@@ -1,4 +1,10 @@
-function Login(){
-    return <h1>Login</h1>
+import LoginForm from "../../components/forms/LoginForm";
+
+function Login() {
+    return (
+        <div>
+            <LoginForm />
+        </div>
+    )
 }
 export default Login

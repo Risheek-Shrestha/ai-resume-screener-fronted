@@ -1,17 +1,17 @@
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 import type { AuthResponse, User } from "../types/auth";
-
+import { setOnAuthFailure } from "../lib/axios";
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
 function AuthProvider({ children }: AuthProviderProps) {
-
     const [accessToken, setAccessToken] = useState<string | null>(() =>
-        localStorage.getItem("accessToken"));
+        localStorage.getItem("accessToken")
+    );
 
     const [user, setUser] = useState<User | null>(() => {
         try {
@@ -48,9 +48,14 @@ function AuthProvider({ children }: AuthProviderProps) {
         localStorage.removeItem("user");
     }
 
+    useEffect(() => {
+        setOnAuthFailure(logout);
+    }, []);
+
     return (
-        <AuthContext.Provider value={{ user, accessToken, isAuthenticated, login, logout }}
-        >{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ user, accessToken, isAuthenticated, login, logout }}>
+            {children}
+        </AuthContext.Provider>
     );
 }
 
