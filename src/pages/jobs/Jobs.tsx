@@ -27,8 +27,7 @@ function Jobs() {
                     : [];
                 setJobs(jobsList);
                 setTotalPages(data?.totalPages || 0);
-            } catch (error) {
-                console.error("Error fetching jobs:", error);
+            } catch{
                 setError("Failed to fetch jobs");
             } finally {
                 setLoading(false);
