@@ -14,6 +14,7 @@ import NotFound from "../pages/NotFound";
 import Index from "../pages/Index";
 import ProtectedRoute from "../routes/ProtectedRoute"
 import RoleRoute from "./RoleRoute";
+import MainLayout from "../components/layout/MainLayout";
 
 function AppRoutes() {
     return (
@@ -23,20 +24,24 @@ function AppRoutes() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/error" element={<NotFound />} />
                 <Route path="*" element={<Index />} />
-                <Route element = {<RoleRoute allowedRoles={["ADMIN"]} />}>
-                <Route path="/admin" element={<AdminDashboard />} />
+                <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
+                    <Route element={<MainLayout />}>
+                        <Route path="/admin" element={<AdminDashboard />} />
+                    </Route>
                 </Route>
-                <Route element = {<ProtectedRoute />}>
-                <Route path="/dashboard" element={<DashBoard />} />
-                <Route path="/jobs" element={<Jobs />} />
-                <Route path="/jobs/:id" element={<JobDetails />} />
-                <Route path="/resume" element={<MyResumes />} />
-                <Route path="/resume/upload" element={<UploadResume />} />
-                <Route path="/resume/:id/score" element={<ResumeScore />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<MainLayout />}>
+                        <Route path="/dashboard" element={<DashBoard />} />
+                        <Route path="/jobs" element={<Jobs />} />
+                        <Route path="/jobs/:id" element={<JobDetails />} />
+                        <Route path="/resume" element={<MyResumes />} />
+                        <Route path="/resume/upload" element={<UploadResume />} />
+                        <Route path="/resume/:id/score" element={<ResumeScore />} />
+                        <Route path="/profile" element={<Profile />} />
+                    </Route>
                 </Route>
             </Routes>
-        </BrowserRouter>
+        </BrowserRouter >
     );
 }
 
