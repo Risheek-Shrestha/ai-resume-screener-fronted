@@ -15,6 +15,7 @@ import Index from "../pages/Index";
 import ProtectedRoute from "../routes/ProtectedRoute"
 import RoleRoute from "./RoleRoute";
 import MainLayout from "../components/layout/MainLayout";
+import ApplyForJob from "../pages/jobs/ApplyforJob";
 
 function AppRoutes() {
     return (
@@ -34,6 +35,7 @@ function AppRoutes() {
                         <Route path="/dashboard" element={<DashBoard />} />
                         <Route path="/jobs" element={<Jobs />} />
                         <Route path="/jobs/:id" element={<JobDetails />} />
+                        <Route path="/jobs/:id/apply" element={<ApplyForJob />} />
                         <Route path="/resume" element={<MyResumes />} />
                         <Route path="/resume/upload" element={<UploadResume />} />
                         <Route path="/resume/:id/score" element={<ResumeScore />} />
