@@ -10,7 +10,7 @@ function UploadResume() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
-    const {navigate} = useNavigate();
+    const navigate = useNavigate();
 
     const handleUpload = async () => {
 
@@ -37,14 +37,13 @@ function UploadResume() {
             setResumeName("");
             setFile(null);
 
-            // Reset file input
             const input = document.getElementById("resumeFile") as HTMLInputElement;
             if (input) {
                 input.value = "";
                 
             }
 
-            navigate("/MyResumes");
+            navigate("/resume");
 
         } catch (err: any) {
             if (err.response?.data?.message) {

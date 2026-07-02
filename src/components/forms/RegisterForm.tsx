@@ -1,102 +1,195 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowRight, Lock, Mail, User } from "lucide-react";
+
+import Button from "../common/Button";
+import Input from "../common/Input";
+import Card from "../ui/Card";
+
 import { register as registerApi } from "../../services/authService";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 function RegisterForm() {
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState<string | null>(null);
+
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-    const navigate = useNavigate();
-
-    async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    async function handleSubmit(
+        e: React.FormEvent<HTMLFormElement>
+    ) {
         e.preventDefault();
-        setError(null);
+
+        setError("");
         setLoading(true);
 
         try {
-            await registerApi(username, email, password);
-            navigate("/login");
+            await registerApi(
+                username,
+                email,
+                password
+            );
+
+            navigate("/login", {
+                state: {
+                    successMessage:
+                        "Account created successfully. Please sign in.",
+                },
+            });
         } catch (err) {
-            setError(getErrorMessage(err, "Something went wrong. Please try again."));
+            setError(
+                getErrorMessage(
+                    err,
+                    "Unable to create account."
+                )
+            );
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-            <form
-                onSubmit={handleSubmit}
-                className="w-full max-w-sm space-y-4 rounded-xl bg-white p-8 shadow-md"
+        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6">
+
+            <div className="absolute left-10 top-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+            <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
+
+            <Card
+                className="relative w-full max-w-md border-slate-800 bg-slate-900 text-white shadow-2xl"
+                padding="lg"
             >
-                <h1 className="text-2xl font-semibold text-gray-900">Create an account</h1>
 
-                <div className="space-y-1">
-                    <label htmlFor="username" className="text-sm font-medium text-gray-700">
-                        Username
-                    </label>
-                    <input
-                        id="username"
-                        type="text"
-                        placeholder="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                    />
+                <div className="mb-8 text-center">
+
+                    <h1 className="text-3xl font-bold">
+                        Create Account
+                    </h1>
+
+                    <p className="mt-2 text-slate-400">
+                        Join ResumeScreener and start getting
+                        AI-powered resume feedback.
+                    </p>
+
                 </div>
 
-                <div className="space-y-1">
-                    <label htmlFor="email" className="text-sm font-medium text-gray-700">
-                        Email
-                    </label>
-                    <input
-                        id="email"
-                        type="email"
-                        placeholder="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                    />
-                </div>
-
-                <div className="space-y-1">
-                    <label htmlFor="password" className="text-sm font-medium text-gray-700">
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        type="password"
-                        placeholder="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                    />
-                </div>
-
-                {error && <p className="text-sm text-red-600">{error}</p>}
-
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+                <form
+                    onSubmit={handleSubmit}
+                    className="space-y-6"
                 >
-                    {loading ? "Registering..." : "Register"}
-                </button>
 
-                <p className="text-center text-sm text-gray-600">
+                    <div>
+
+                        <label className="mb-2 flex items-center gap-2 text-sm text-slate-300">
+
+                            <User size={16} />
+
+                            Username
+
+                        </label>
+
+                        <Input
+                            id="username"
+                            placeholder="john_doe"
+                            value={username}
+                            onChange={(e) =>
+                                setUsername(e.target.value)
+                            }
+                            required
+                        />
+
+                    </div>
+
+                    <div>
+
+                        <label className="mb-2 flex items-center gap-2 text-sm text-slate-300">
+
+                            <Mail size={16} />
+
+                            Email
+
+                        </label>
+
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="john@example.com"
+                            value={email}
+                            onChange={(e) =>
+                                setEmail(e.target.value)
+                            }
+                            required
+                        />
+
+                    </div>
+
+                    <div>
+
+                        <label className="mb-2 flex items-center gap-2 text-sm text-slate-300">
+
+                            <Lock size={16} />
+
+                            Password
+
+                        </label>
+
+                        <Input
+                            id="password"
+                            type="password"
+                            placeholder="••••••••"
+                            value={password}
+                            onChange={(e) =>
+                                setPassword(e.target.value)
+                            }
+                            helperText="Minimum 8 characters recommended."
+                            required
+                        />
+
+                    </div>
+
+                    {error && (
+                        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+                            {error}
+                        </div>
+                    )}
+
+                    <Button
+                        type="submit"
+                        loading={loading}
+                        fullWidth
+                        size="lg"
+                    >
+                        Register
+
+                        {!loading && (
+                            <ArrowRight
+                                size={18}
+                                className="ml-2"
+                            />
+                        )}
+
+                    </Button>
+
+                </form>
+
+                <p className="mt-8 text-center text-sm text-slate-400">
+
                     Already have an account?{" "}
-                    <Link to="/login" className="text-blue-600 hover:underline">
+
+                    <Link
+                        to="/login"
+                        className="font-semibold text-cyan-400 hover:text-cyan-300"
+                    >
                         Login
                     </Link>
+
                 </p>
-            </form>
+
+            </Card>
+
         </div>
     );
 }
