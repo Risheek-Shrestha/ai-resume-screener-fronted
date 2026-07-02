@@ -31,3 +31,21 @@ export const uploadResume = async (
 
     return response.data;
 };
+
+export const deleteResume = async (id: number) => {
+    await api.delete(`/resumes/${id}`);
+};
+
+export const downloadResumeForApplication = async (
+    applicationId: number
+): Promise<Blob> => {
+
+    const response = await api.get(
+        `/resumes/application/${applicationId}/download`,
+        {
+            responseType: "blob"
+        }
+    );
+
+    return response.data;
+};

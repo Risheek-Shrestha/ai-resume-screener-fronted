@@ -8,7 +8,7 @@ import type { ResumeResponse } from "../../types/resume";
 import type { ApplicationResultResponse} from "../../types/application";
 
 function ApplyForJob() {
-    const { jobId } = useParams();
+    const { id } = useParams();
 
     const [resumes, setResumes] = useState<ResumeResponse[]>([]);
     const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
@@ -80,7 +80,7 @@ function ApplyForJob() {
     };
 
     const handleApply = async () => {
-        if (!jobId) {
+        if (!id) {
             setError("Invalid job.");
             return;
         }
@@ -94,7 +94,7 @@ function ApplyForJob() {
             setApplying(true);
             setError("");
 
-            const response = await applyForJob(Number(jobId), {
+            const response = await applyForJob(Number(id), {
                 resumeId: selectedResumeId,
             });
 
@@ -115,7 +115,7 @@ function ApplyForJob() {
             <h1>Apply for Job</h1>
 
             <p>
-                <strong>Job ID:</strong> {jobId}
+                <strong>Job ID:</strong> {id}
             </p>
 
             <hr />

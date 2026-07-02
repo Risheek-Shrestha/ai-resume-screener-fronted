@@ -12,3 +12,12 @@ export interface JobResponse {
     applicationStatus : string;
 }
 
+export interface JobRequest {
+    title: string;
+    description: string;
+    jobType: string;
+    experienceLevel: string;
+    skills: string[];
+    applicationStartsAt: string;
+    applicationDeadline: string;
+}
