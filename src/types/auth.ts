@@ -32,3 +32,12 @@ export interface AuthContextType {
     login: (data: AuthResponse) => void;
     logout: () => void;
 }
+
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ResetPasswordRequest {
+    token: string;
+    newPassword: string;
+}

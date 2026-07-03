@@ -21,3 +21,10 @@ export interface JobRequest {
     applicationStartsAt: string;
     applicationDeadline: string;
 }
+
+export interface JobFilters {
+    keyword?: string;
+    jobType?: string;
+    level?: string;
+    skill?: string;
+}

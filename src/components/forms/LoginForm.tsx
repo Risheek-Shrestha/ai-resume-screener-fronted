@@ -129,6 +129,15 @@ function LoginForm() {
                                 required
                             />
 
+                            <div className="mt-2 text-right">
+                                <Link
+                                    to="/forgot-password"
+                                    className="text-sm font-medium text-cyan-400 hover:text-cyan-300"
+                                >
+                                    Forgot password?
+                                </Link>
+                            </div>
+
                         </div>
 
                         {successMessage && (

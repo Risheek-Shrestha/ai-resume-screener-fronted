@@ -11,6 +11,7 @@ import {
 
 import useAuth from "../../hooks/useAuth";
 import Button from "../common/Button";
+import NotificationBell from "./NotificationBell";
 
 function Navbar() {
     const { user, logout, isAuthenticated } = useAuth();
@@ -84,6 +85,8 @@ function Navbar() {
 
                     {isAuthenticated ? (
                         <>
+                            <NotificationBell />
+
                             <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2">
 
                                 {user?.role === "ADMIN" ? (
@@ -128,15 +131,19 @@ function Navbar() {
 
                 {/* Mobile menu toggle */}
 
-                <button
-                    type="button"
-                    onClick={() => setMenuOpen((v) => !v)}
-                    aria-label={menuOpen ? "Close menu" : "Open menu"}
-                    aria-expanded={menuOpen}
-                    className="rounded-lg border border-slate-800 p-2 text-slate-300 md:hidden"
-                >
-                    {menuOpen ? <X size={20} /> : <Menu size={20} />}
-                </button>
+                <div className="flex items-center gap-2 md:hidden">
+                    {isAuthenticated && <NotificationBell />}
+
+                    <button
+                        type="button"
+                        onClick={() => setMenuOpen((v) => !v)}
+                        aria-label={menuOpen ? "Close menu" : "Open menu"}
+                        aria-expanded={menuOpen}
+                        className="rounded-lg border border-slate-800 p-2 text-slate-300"
+                    >
+                        {menuOpen ? <X size={20} /> : <Menu size={20} />}
+                    </button>
+                </div>
 
             </div>
 

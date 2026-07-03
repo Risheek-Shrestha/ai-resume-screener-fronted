@@ -1,8 +1,27 @@
 import api from "../lib/axios"
-import type { JobResponse, JobRequest } from "../types/job";
+import type { JobResponse, JobRequest, JobFilters } from "../types/job";
 
-export const getJobs = async(page: number, size: number) => {
-    const response = await api.get("/jobs", { params: { page, size } });
+function buildFilterParams(page: number, size: number, filters?: JobFilters) {
+    const params: Record<string, string | number> = { page, size };
+
+    if (filters?.keyword) params.keyword = filters.keyword;
+    if (filters?.jobType) params.jobType = filters.jobType;
+    if (filters?.level) params.level = filters.level;
+    if (filters?.skill) params.skill = filters.skill;
+
+    return params;
+}
+
+export const getJobs = async(page: number, size: number, filters?: JobFilters) => {
+    const response = await api.get("/jobs", { params: buildFilterParams(page, size, filters) });
+
+    return response.data;
+}
+
+// Open jobs for the current user, supporting the same keyword/jobType/level/skill filters
+// exposed by the backend's GET /api/v1/jobs/open endpoint.
+export const getOpenJobs = async (page: number, size: number, filters?: JobFilters) => {
+    const response = await api.get("/jobs/open", { params: buildFilterParams(page, size, filters) });
 
     return response.data;
 }
