@@ -6,6 +6,14 @@ import {
     updateJob
 } from "../../services/jobService";
 
+import { Plus, X } from "lucide-react";
+
+import Card from "../../components/ui/Card";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
+import Badge from "../../components/ui/Badge";
+import Loader from "../../components/common/Loader";
+
 function EditJob() {
 
     const { id } = useParams();
@@ -147,112 +155,168 @@ function EditJob() {
 
     return (
 
-        <div>
+        <div className="min-h-screen bg-slate-950 px-6 py-16 text-white">
 
-            <h1>Edit Job</h1>
+            <div className="mx-auto max-w-2xl">
 
-            {loading && <p>Loading...</p>}
+                <h1 className="text-4xl font-black">
+                    Edit Job
+                </h1>
+                <p className="mt-2 text-slate-400">
+                    Update the details of this job posting.
+                </p>
 
-            {error && <p>{error}</p>}
+                {loading && (
+                    <div className="mt-10">
+                        <Loader text="Loading..." />
+                    </div>
+                )}
 
-            {success && <p>{success}</p>}
+                {error && (
+                    <div className="mt-6 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+                        {error}
+                    </div>
+                )}
 
-            <p>Title</p>
+                {success && (
+                    <div className="mt-6 rounded-xl border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
+                        {success}
+                    </div>
+                )}
 
-            <input
-                value={title}
-                onChange={(e)=>setTitle(e.target.value)}
-            />
+                <Card
+                    className="mt-8 border-slate-800 bg-slate-900 text-white"
+                    padding="lg"
+                >
 
-            <p>Description</p>
+                    <div className="space-y-6">
 
-            <textarea
-                rows={8}
-                cols={60}
-                value={description}
-                onChange={(e)=>setDescription(e.target.value)}
-            />
+                        <Input
+                            label="Title"
+                            value={title}
+                            onChange={(e)=>setTitle(e.target.value)}
+                        />
 
-            <p>Job Type</p>
+                        <div>
+                            <label className="mb-2 block text-sm font-medium text-slate-300">
+                                Description
+                            </label>
+                            <textarea
+                                rows={8}
+                                value={description}
+                                onChange={(e)=>setDescription(e.target.value)}
+                                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-100 placeholder:text-slate-500 transition-all duration-200 focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                            />
+                        </div>
 
-            <input
-                value={jobType}
-                onChange={(e)=>setJobType(e.target.value)}
-            />
+                        <div className="grid gap-6 sm:grid-cols-2">
 
-            <p>Experience Level</p>
+                            <Input
+                                label="Job Type"
+                                value={jobType}
+                                onChange={(e)=>setJobType(e.target.value)}
+                            />
 
-            <input
-                value={experienceLevel}
-                onChange={(e)=>setExperienceLevel(e.target.value)}
-            />
+                            <Input
+                                label="Experience Level"
+                                value={experienceLevel}
+                                onChange={(e)=>setExperienceLevel(e.target.value)}
+                            />
 
-            <p>Application Starts At</p>
+                        </div>
 
-            <input
-                type="datetime-local"
-                value={applicationStartsAt}
-                onChange={(e)=>
-                    setApplicationStartsAt(e.target.value)
-                }
-            />
+                        <div className="grid gap-6 sm:grid-cols-2">
 
-            <p>Application Deadline</p>
+                            <Input
+                                label="Application Starts At"
+                                type="datetime-local"
+                                value={applicationStartsAt}
+                                onChange={(e)=>
+                                    setApplicationStartsAt(e.target.value)
+                                }
+                            />
 
-            <input
-                type="datetime-local"
-                value={applicationDeadline}
-                onChange={(e)=>
-                    setApplicationDeadline(e.target.value)
-                }
-            />
+                            <Input
+                                label="Application Deadline"
+                                type="datetime-local"
+                                value={applicationDeadline}
+                                onChange={(e)=>
+                                    setApplicationDeadline(e.target.value)
+                                }
+                            />
 
-            <hr />
+                        </div>
 
-            <h2>Skills</h2>
+                        <div className="border-t border-slate-800 pt-6">
 
-            <input
-                value={skill}
-                onChange={(e)=>setSkill(e.target.value)}
-            />
+                            <h2 className="text-lg font-semibold">
+                                Skills
+                            </h2>
 
-            <button
-                onClick={addSkill}
-            >
-                Add Skill
-            </button>
+                            <div className="mt-4 flex gap-3">
 
-            <br/>
-            <br/>
+                                <Input
+                                    value={skill}
+                                    onChange={(e)=>setSkill(e.target.value)}
+                                    placeholder="e.g. React"
+                                />
 
-            {skills.map((skill,index)=>(
+                                <Button
+                                    variant="secondary"
+                                    onClick={addSkill}
+                                    className="shrink-0"
+                                >
+                                    <Plus size={16} className="mr-2" />
+                                    Add
+                                </Button>
 
-                <div key={index}>
+                            </div>
 
-                    {skill}
+                            {skills.length > 0 && (
+                                <div className="mt-4 flex flex-wrap gap-2">
 
-                    <button
-                        onClick={()=>
-                            removeSkill(index)
-                        }
-                    >
-                        Remove
-                    </button>
+                                    {skills.map((skill,index)=>(
 
-                </div>
+                                        <Badge
+                                            key={index}
+                                            variant="secondary"
+                                            className="gap-2 pr-2"
+                                        >
+                                            {skill}
+                                            <button
+                                                onClick={()=>
+                                                    removeSkill(index)
+                                                }
+                                                className="text-slate-400 hover:text-red-400"
+                                                aria-label={`Remove ${skill}`}
+                                            >
+                                                <X size={12} />
+                                            </button>
+                                        </Badge>
 
-            ))}
+                                    ))}
 
-            <br/>
+                                </div>
+                            )}
 
-            <button
-                onClick={handleUpdate}
-                disabled={loading}
-            >
-                {loading
-                    ? "Updating..."
-                    : "Update Job"}
-            </button>
+                        </div>
+
+                        <Button
+                            onClick={handleUpdate}
+                            disabled={loading}
+                            fullWidth
+                            size="lg"
+                        >
+                            {loading
+                                ? "Updating..."
+                                : "Update Job"}
+                        </Button>
+
+                    </div>
+
+                </Card>
+
+            </div>
 
         </div>
 

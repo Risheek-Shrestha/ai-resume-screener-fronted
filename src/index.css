@@ -1,10 +1,31 @@
 @import "tailwindcss";
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background-color: #F7F8FA;
 }
 
 .font-display {
   font-family: "Space Grotesk", -apple-system, sans-serif;
+}
+
+::selection {
+  background-color: rgba(6, 182, 212, 0.35);
+  color: #ffffff;
+}
+
+/* Slim, dark-theme-friendly scrollbar for scrollable panels */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #334155 transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #334155;
+  border-radius: 9999px;
 }

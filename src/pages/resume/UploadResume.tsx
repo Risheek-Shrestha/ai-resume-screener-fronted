@@ -2,6 +2,12 @@ import { useState } from "react";
 import { uploadResume } from "../../services/resumeService";
 import { useNavigate } from "react-router-dom";
 
+import { UploadCloud } from "lucide-react";
+
+import Card from "../../components/ui/Card";
+import Input from "../../components/common/Input";
+import Button from "../../components/common/Button";
+
 function UploadResume() {
 
     const [resumeName, setResumeName] = useState("");
@@ -57,63 +63,83 @@ function UploadResume() {
     };
 
     return (
-        <div>
+        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6 py-16">
 
-            <h1>Upload Resume</h1>
+            <div className="absolute left-10 top-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
+            <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
 
-            <div>
-                <label>Resume Name</label>
-                <br />
-
-                <input
-                    type="text"
-                    value={resumeName}
-                    onChange={(e) => setResumeName(e.target.value)}
-                    placeholder="Enter resume name"
-                />
-            </div>
-
-            <br />
-
-            <div>
-                <label>Select Resume</label>
-                <br />
-
-                <input
-                    id="resumeFile"
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={(e) => {
-                        if (e.target.files && e.target.files.length > 0) {
-                            setFile(e.target.files[0]);
-                        }
-                    }}
-                />
-            </div>
-
-            <br />
-
-            <button
-                onClick={handleUpload}
-                disabled={loading}
+            <Card
+                className="relative w-full max-w-md border-slate-800 bg-slate-900 text-white shadow-2xl"
+                padding="lg"
             >
-                {loading ? "Uploading..." : "Upload Resume"}
-            </button>
 
-            <br />
-            <br />
+                <div className="mb-8 text-center">
 
-            {error && (
-                <p>
-                    <strong>Error:</strong> {error}
-                </p>
-            )}
+                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-400">
+                        <UploadCloud size={26} />
+                    </div>
 
-            {success && (
-                <p>
-                    <strong>{success}</strong>
-                </p>
-            )}
+                    <h1 className="text-3xl font-bold">
+                        Upload Resume
+                    </h1>
+
+                    <p className="mt-2 text-slate-400">
+                        Add a resume so you can apply for jobs and check ATS scores.
+                    </p>
+
+                </div>
+
+                <div className="space-y-6">
+
+                    <Input
+                        label="Resume Name"
+                        value={resumeName}
+                        onChange={(e) => setResumeName(e.target.value)}
+                        placeholder="Enter resume name"
+                    />
+
+                    <div>
+                        <label className="mb-2 block text-sm font-medium text-slate-300">
+                            Select Resume
+                        </label>
+
+                        <input
+                            id="resumeFile"
+                            type="file"
+                            accept=".pdf,.doc,.docx"
+                            onChange={(e) => {
+                                if (e.target.files && e.target.files.length > 0) {
+                                    setFile(e.target.files[0]);
+                                }
+                            }}
+                            className="block w-full text-sm text-slate-300 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-800 file:px-4 file:py-2 file:text-sm file:font-medium file:text-cyan-400 hover:file:bg-slate-700"
+                        />
+                    </div>
+
+                    <Button
+                        onClick={handleUpload}
+                        disabled={loading}
+                        fullWidth
+                        size="lg"
+                    >
+                        {loading ? "Uploading..." : "Upload Resume"}
+                    </Button>
+
+                    {error && (
+                        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+                            {error}
+                        </div>
+                    )}
+
+                    {success && (
+                        <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
+                            {success}
+                        </div>
+                    )}
+
+                </div>
+
+            </Card>
 
         </div>
     );

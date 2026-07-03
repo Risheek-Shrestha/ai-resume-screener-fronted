@@ -45,18 +45,16 @@ function LoginForm() {
 
             login(data);
 
-            if (data.user.role === "ADMIN") {
+            if (data.role === "ADMIN") {
                 navigate("/admin");
             } else {
                 navigate("/dashboard");
             }
         } catch (err) {
-            setError(
-                getErrorMessage(
-                    err,
-                    "Invalid email or password."
-                )
-            );
+            console.error("LOGIN ERROR");
+            console.error(err);
+
+            throw err;
         } finally {
             setLoading(false);
         }
