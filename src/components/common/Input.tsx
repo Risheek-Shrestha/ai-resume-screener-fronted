@@ -21,7 +21,7 @@ function Input({
             {label && (
                 <label
                     htmlFor={id}
-                    className="mb-2 block text-sm font-medium text-slate-700"
+                    className="mb-2 block text-sm font-medium text-slate-300"
                 >
                     {label}
                 </label>
@@ -32,19 +32,20 @@ function Input({
                 className={`
                     w-full rounded-xl border
                     px-4 py-3
-                    bg-white
-                    text-slate-900
-                    placeholder:text-slate-400
+                    bg-slate-950/60
+                    text-slate-100
+                    placeholder:text-slate-500
                     transition-all duration-200
 
                     ${
                         error
-                            ? "border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-200"
-                            : "border-slate-300 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200"
+                            ? "border-red-500/60 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                            : "border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                     }
 
                     focus:outline-none
-                    disabled:bg-slate-100
+                    disabled:bg-slate-900
+                    disabled:text-slate-500
                     disabled:cursor-not-allowed
 
                     ${className}
@@ -53,7 +54,7 @@ function Input({
             />
 
             {error ? (
-                <p className="mt-2 text-sm text-red-600">
+                <p className="mt-2 text-sm text-red-400">
                     {error}
                 </p>
             ) : helperText ? (

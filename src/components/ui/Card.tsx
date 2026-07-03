@@ -30,13 +30,15 @@ function Card({
             className={`
                 rounded-2xl
                 border
-                border-slate-200
-                bg-white
+                border-slate-800
+                bg-slate-900/70
                 shadow-sm
+                shadow-black/20
+                backdrop-blur-sm
                 transition-all
                 duration-200
 
-                ${hover ? "hover:-translate-y-1 hover:shadow-xl" : ""}
+                ${hover ? "hover:-translate-y-1 hover:border-slate-700 hover:shadow-xl hover:shadow-black/30" : ""}
                 ${paddings[padding]}
                 ${className}
             `}
@@ -46,13 +48,13 @@ function Card({
                 <div className="mb-5">
 
                     {title && (
-                        <h2 className="text-xl font-bold text-slate-900">
+                        <h2 className="text-xl font-bold text-white">
                             {title}
                         </h2>
                     )}
 
                     {subtitle && (
-                        <p className="mt-1 text-sm text-slate-500">
+                        <p className="mt-1 text-sm text-slate-400">
                             {subtitle}
                         </p>
                     )}

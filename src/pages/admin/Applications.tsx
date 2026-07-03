@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { downloadResumeForApplication } from "../../services/resumeService";
 
 import {
@@ -9,13 +9,22 @@ import {
 
 import type { ApplicationResponse } from "../../types/application";
 
-import { ClipboardList, Eye } from "lucide-react";
+import { ArrowLeft, ClipboardList, Eye } from "lucide-react";
 
-import Card from "../../components/ui/Card";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/common/Button";
 import Loader from "../../components/common/Loader";
 import EmptyState from "../../components/ui/EmptyState";
+import Table from "../../components/ui/Table";
+import type { TableColumn } from "../../components/ui/Table";
+import { formatDate } from "../../utils/date";
+import { getErrorMessage } from "../../utils/getErrorMessage";
+
+const statusVariant = (status: string) => {
+    if (status === "REJECTED") return "danger" as const;
+    if (status === "HIRED" || status === "SHORTLISTED") return "success" as const;
+    return "primary" as const;
+};
 
 function AdminApplications() {
 
@@ -27,11 +36,10 @@ function AdminApplications() {
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
+    const [updatingId, setUpdatingId] = useState<number | null>(null);
 
     useEffect(() => {
-
         loadApplications();
-
     }, [jobId]);
 
     const loadApplications = async () => {
@@ -41,12 +49,9 @@ function AdminApplications() {
         try {
 
             setLoading(true);
-
             setError("");
 
-            const data = await getApplicationsForJob(
-                Number(jobId)
-            );
+            const data = await getApplicationsForJob(Number(jobId));
 
             setApplications(data);
 
@@ -62,24 +67,16 @@ function AdminApplications() {
 
     };
 
-    const changeStatus = async (
-        applicationId: number,
-        status: string
-    ) => {
+    const changeStatus = async (applicationId: number, status: string) => {
 
         try {
-
-            await updateApplicationStatus(
-                applicationId,
-                status
-            );
-
-            loadApplications();
-
-        } catch {
-
-            setError("Unable to update status.");
-
+            setUpdatingId(applicationId);
+            await updateApplicationStatus(applicationId, status);
+            await loadApplications();
+        } catch (err) {
+            setError(getErrorMessage(err, "Unable to update status."));
+        } finally {
+            setUpdatingId(null);
         }
 
     };
@@ -102,188 +99,145 @@ function AdminApplications() {
 
     };
 
+    const columns: TableColumn<ApplicationResponse>[] = [
+        {
+            header: "Application",
+            cell: (application) => (
+                <div>
+                    <p className="font-semibold text-white">#{application.id}</p>
+                    <p className="mt-0.5 text-xs text-slate-500">Resume #{application.resumeId}</p>
+                </div>
+            ),
+        },
+        {
+            header: "ATS Score",
+            cell: (application) => (
+                <span className="font-semibold text-cyan-400">{application.atsScore}</span>
+            ),
+        },
+        {
+            header: "Applied On",
+            cell: (application) => (
+                <span className="text-slate-300">{formatDate(application.applicationTime)}</span>
+            ),
+        },
+        {
+            header: "Status",
+            cell: (application) => (
+                <Badge variant={statusVariant(application.status)}>
+                    {application.status}
+                </Badge>
+            ),
+        },
+        {
+            header: "Actions",
+            align: "right",
+            className: "min-w-[280px]",
+            cell: (application) => (
+                <div className="flex flex-wrap items-center justify-end gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => viewResume(application.id)}
+                    >
+                        <Eye size={14} className="mr-1.5" />
+                        Resume
+                    </Button>
+
+                    {application.status === "APPLIED" && (
+                        <>
+                            <Button
+                                size="sm"
+                                loading={updatingId === application.id}
+                                onClick={() => changeStatus(application.id, "SHORTLISTED")}
+                            >
+                                Shortlist
+                            </Button>
+                            <Button
+                                variant="danger"
+                                size="sm"
+                                loading={updatingId === application.id}
+                                onClick={() => changeStatus(application.id, "REJECTED")}
+                            >
+                                Reject
+                            </Button>
+                        </>
+                    )}
+
+                    {application.status === "SHORTLISTED" && (
+                        <>
+                            <Button
+                                size="sm"
+                                loading={updatingId === application.id}
+                                onClick={() => changeStatus(application.id, "HIRED")}
+                            >
+                                Hire
+                            </Button>
+                            <Button
+                                variant="danger"
+                                size="sm"
+                                loading={updatingId === application.id}
+                                onClick={() => changeStatus(application.id, "REJECTED")}
+                            >
+                                Reject
+                            </Button>
+                        </>
+                    )}
+                </div>
+            ),
+        },
+    ];
+
     return (
 
-        <div className="min-h-screen bg-slate-950 px-6 py-16 text-white">
+        <div className="mx-auto max-w-6xl px-6 py-10 md:py-16">
 
-            <div className="mx-auto max-w-4xl">
+            <Link
+                to="/admin/jobs"
+                className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+            >
+                <ArrowLeft size={16} />
+                Back to posted jobs
+            </Link>
 
-                <h1 className="text-4xl font-black">
-                    Applications
-                </h1>
-                <p className="mt-2 text-slate-400">
-                    Review and manage applicants for this job.
-                </p>
+            <h1 className="font-display text-4xl font-bold">
+                Applications
+            </h1>
+            <p className="mt-2 text-slate-400">
+                Review and manage applicants for this job.
+            </p>
 
-                {loading && (
-                    <div className="mt-16">
-                        <Loader text="Loading applications..." />
-                    </div>
-                )}
+            {loading && (
+                <div className="mt-16">
+                    <Loader text="Loading applications..." />
+                </div>
+            )}
 
-                {error && (
-                    <div className="mt-8 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
-                        {error}
-                    </div>
-                )}
+            {error && (
+                <div className="mt-8 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-400">
+                    {error}
+                </div>
+            )}
 
-                {!loading && applications.length === 0 && (
+            {!loading && applications.length === 0 && (
+                <div className="mt-10">
+                    <EmptyState
+                        icon={ClipboardList}
+                        title="No applications"
+                        description="No one has applied for this job yet."
+                    />
+                </div>
+            )}
 
-                    <div className="mt-10">
-                        <EmptyState
-                            icon={ClipboardList}
-                            title="No applications"
-                            description="No one has applied for this job yet."
-                        />
-                    </div>
-
-                )}
-
-                {!loading && applications.length > 0 && (
-                    <div className="mt-10 space-y-5">
-
-                        {applications.map(application => (
-
-                            <Card
-                                key={application.id}
-                                className="border-slate-800 bg-slate-900 text-white"
-                            >
-
-                                <div className="flex flex-wrap items-start justify-between gap-4">
-
-                                    <div>
-                                        <h2 className="text-lg font-semibold">
-                                            {application.jobTitle}
-                                        </h2>
-                                        <p className="mt-1 text-xs text-slate-500">
-                                            Application #{application.id} &middot; Resume #{application.resumeId}
-                                        </p>
-                                    </div>
-
-                                    <Badge
-                                        variant={
-                                            application.status === "REJECTED"
-                                                ? "danger"
-                                                : application.status === "HIRED" ||
-                                                  application.status === "SHORTLISTED"
-                                                ? "success"
-                                                : "primary"
-                                        }
-                                    >
-                                        {application.status}
-                                    </Badge>
-
-                                </div>
-
-                                <div className="mt-4 flex flex-wrap items-center gap-6 border-t border-slate-800 pt-4 text-sm">
-
-                                    <div>
-                                        <p className="text-xs uppercase tracking-wide text-slate-500">
-                                            ATS Score
-                                        </p>
-                                        <p className="mt-1 font-semibold text-cyan-400">
-                                            {application.atsScore}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <p className="text-xs uppercase tracking-wide text-slate-500">
-                                            ATS Score
-                                        </p>
-                                        <p className="mt-1 font-semibold text-cyan-400">
-                                            {application.atsScore}
-                                        </p>
-                                    </div>
-
-                                </div>
-
-                                <div className="mt-5 flex flex-wrap items-center gap-3">
-
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() => viewResume(application.id)}
-                                    >
-                                        <Eye size={14} className="mr-2" />
-                                        View Resume
-                                    </Button>
-
-                                    {application.status === "APPLIED" && (
-
-                                        <>
-
-                                            <Button
-                                                size="sm"
-                                                onClick={() =>
-                                                    changeStatus(
-                                                        application.id,
-                                                        "SHORTLISTED"
-                                                    )
-                                                }
-                                            >
-                                                Shortlist
-                                            </Button>
-
-                                            <Button
-                                                variant="danger"
-                                                size="sm"
-                                                onClick={() =>
-                                                    changeStatus(
-                                                        application.id,
-                                                        "REJECTED"
-                                                    )
-                                                }
-                                            >
-                                                Reject
-                                            </Button>
-
-                                        </>
-
-                                    )}
-
-                                    {application.status === "SHORTLISTED" && (
-
-                                        <>
-
-                                            <Button
-                                                size="sm"
-                                                onClick={() =>
-                                                    changeStatus(
-                                                        application.id,
-                                                        "HIRED"
-                                                    )
-                                                }
-                                            >
-                                                Hire
-                                            </Button>
-
-                                            <Button
-                                                variant="danger"
-                                                size="sm"
-                                                onClick={() =>
-                                                    changeStatus(
-                                                        application.id,
-                                                        "REJECTED"
-                                                    )
-                                                }
-                                            >
-                                                Reject
-                                            </Button>
-
-                                        </>
-
-                                    )}
-
-                                </div>
-
-                            </Card>
-
-                        ))}
-
-                    </div>
-                )}
-
-            </div>
+            {!loading && applications.length > 0 && (
+                <div className="mt-10">
+                    <Table
+                        columns={columns}
+                        data={applications}
+                        keyField={(application) => application.id}
+                    />
+                </div>
+            )}
 
         </div>
 

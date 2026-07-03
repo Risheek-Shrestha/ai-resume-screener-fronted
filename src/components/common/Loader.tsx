@@ -29,7 +29,7 @@ function Loader({
             />
 
             {text && (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-400">
                     {text}
                 </p>
             )}

@@ -7,7 +7,8 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
         | "success"
         | "warning"
         | "danger"
-        | "secondary";
+        | "secondary"
+        | "accent";
 }
 
 function Badge({
@@ -19,19 +20,22 @@ function Badge({
 
     const variants = {
         primary:
-            "bg-cyan-100 text-cyan-700",
+            "bg-cyan-500/10 text-cyan-300 ring-1 ring-inset ring-cyan-500/25",
 
         success:
-            "bg-green-100 text-green-700",
+            "bg-emerald-500/10 text-emerald-300 ring-1 ring-inset ring-emerald-500/25",
 
         warning:
-            "bg-yellow-100 text-yellow-700",
+            "bg-amber-500/10 text-amber-300 ring-1 ring-inset ring-amber-500/25",
 
         danger:
-            "bg-red-100 text-red-700",
+            "bg-red-500/10 text-red-300 ring-1 ring-inset ring-red-500/25",
 
         secondary:
-            "bg-slate-100 text-slate-700",
+            "bg-slate-500/10 text-slate-300 ring-1 ring-inset ring-slate-500/20",
+
+        accent:
+            "bg-indigo-500/10 text-indigo-300 ring-1 ring-inset ring-indigo-500/25",
     };
 
     return (
@@ -39,6 +43,7 @@ function Badge({
             className={`
                 inline-flex
                 items-center
+                gap-1
                 rounded-full
                 px-3
                 py-1

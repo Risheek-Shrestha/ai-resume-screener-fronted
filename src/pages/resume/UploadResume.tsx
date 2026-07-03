@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { uploadResume } from "../../services/resumeService";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { UploadCloud } from "lucide-react";
+import { ArrowLeft, UploadCloud } from "lucide-react";
 
 import Card from "../../components/ui/Card";
 import Input from "../../components/common/Input";
 import Button from "../../components/common/Button";
+import Dropzone from "../../components/ui/Dropzone";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 function UploadResume() {
 
@@ -43,103 +45,94 @@ function UploadResume() {
             setResumeName("");
             setFile(null);
 
-            const input = document.getElementById("resumeFile") as HTMLInputElement;
-            if (input) {
-                input.value = "";
-                
-            }
-
             navigate("/resume");
 
-        } catch (err: any) {
-            if (err.response?.data?.message) {
-                setError(err.response.data.message);
-            } else {
-                setError("Failed to upload resume.");
-            }
+        } catch (err) {
+            setError(getErrorMessage(err, "Failed to upload resume."));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6 py-16">
+        <div className="relative flex min-h-[80vh] items-center justify-center px-6 py-16">
 
-            <div className="absolute left-10 top-10 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl" />
-            <div className="absolute bottom-10 right-10 h-72 w-72 rounded-full bg-blue-600/20 blur-3xl" />
+            <div className="w-full max-w-md">
 
-            <Card
-                className="relative w-full max-w-md border-slate-800 bg-slate-900 text-white shadow-2xl"
-                padding="lg"
-            >
+                <Link
+                    to="/resume"
+                    className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-cyan-400"
+                >
+                    <ArrowLeft size={16} />
+                    Back to my resumes
+                </Link>
 
-                <div className="mb-8 text-center">
+                <Card padding="lg" className="shadow-2xl">
 
-                    <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-400">
-                        <UploadCloud size={26} />
+                    <div className="mb-8 text-center">
+
+                        <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-400">
+                            <UploadCloud size={26} />
+                        </div>
+
+                        <h1 className="font-display text-3xl font-bold">
+                            Upload Resume
+                        </h1>
+
+                        <p className="mt-2 text-slate-400">
+                            Add a resume so you can apply for jobs and check ATS scores.
+                        </p>
+
                     </div>
 
-                    <h1 className="text-3xl font-bold">
-                        Upload Resume
-                    </h1>
+                    <div className="space-y-6">
 
-                    <p className="mt-2 text-slate-400">
-                        Add a resume so you can apply for jobs and check ATS scores.
-                    </p>
-
-                </div>
-
-                <div className="space-y-6">
-
-                    <Input
-                        label="Resume Name"
-                        value={resumeName}
-                        onChange={(e) => setResumeName(e.target.value)}
-                        placeholder="Enter resume name"
-                    />
-
-                    <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-300">
-                            Select Resume
-                        </label>
-
-                        <input
-                            id="resumeFile"
-                            type="file"
-                            accept=".pdf,.doc,.docx"
-                            onChange={(e) => {
-                                if (e.target.files && e.target.files.length > 0) {
-                                    setFile(e.target.files[0]);
-                                }
-                            }}
-                            className="block w-full text-sm text-slate-300 file:mr-4 file:rounded-lg file:border-0 file:bg-slate-800 file:px-4 file:py-2 file:text-sm file:font-medium file:text-cyan-400 hover:file:bg-slate-700"
+                        <Input
+                            label="Resume Name"
+                            value={resumeName}
+                            onChange={(e) => setResumeName(e.target.value)}
+                            placeholder="e.g. Senior Backend Engineer — 2026"
                         />
+
+                        <div>
+                            <label className="mb-2 block text-sm font-medium text-slate-300">
+                                Select Resume
+                            </label>
+
+                            <Dropzone
+                                inputId="resumeFile"
+                                file={file}
+                                onFileSelect={setFile}
+                                hint="PDF, DOC, or DOCX"
+                            />
+                        </div>
+
+                        <Button
+                            onClick={handleUpload}
+                            disabled={loading}
+                            fullWidth
+                            size="lg"
+                        >
+                            {loading ? "Uploading..." : "Upload Resume"}
+                        </Button>
+
+                        {error && (
+                            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
+                                {error}
+                            </div>
+                        )}
+
+                        {success && (
+                            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-300">
+                                {success}
+                            </div>
+                        )}
+
                     </div>
 
-                    <Button
-                        onClick={handleUpload}
-                        disabled={loading}
-                        fullWidth
-                        size="lg"
-                    >
-                        {loading ? "Uploading..." : "Upload Resume"}
-                    </Button>
+                </Card>
 
-                    {error && (
-                        <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-400">
-                            {error}
-                        </div>
-                    )}
-
-                    {success && (
-                        <div className="rounded-xl border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-400">
-                            {success}
-                        </div>
-                    )}
-
-                </div>
-
-            </Card>
+            </div>
 
         </div>
     );

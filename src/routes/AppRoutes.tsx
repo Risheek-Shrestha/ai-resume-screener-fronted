@@ -15,6 +15,7 @@ import Index from "../pages/Index";
 import ProtectedRoute from "../routes/ProtectedRoute"
 import RoleRoute from "./RoleRoute";
 import MainLayout from "../components/layout/MainLayout";
+import AdminLayout from "../components/layout/AdminLayout";
 import ApplyForJob from "../pages/jobs/ApplyforJob";
 import MyApplications from "../pages/profile/MyApplications";
 import CreateJob from "../pages/admin/CreateJob";
@@ -29,10 +30,15 @@ function AppRoutes() {
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/error" element={<NotFound />} />
-                <Route path="*" element={<Index />} />
+
+                <Route element={<MainLayout />}>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/error" element={<NotFound />} />
+                    <Route path="*" element={<NotFound />} />
+                </Route>
+
                 <Route element={<RoleRoute allowedRoles={["ADMIN"]} />}>
-                    <Route element={<MainLayout />}>
+                    <Route element={<AdminLayout />}>
 
                         <Route path="/admin" element={<AdminDashboard />} />
 

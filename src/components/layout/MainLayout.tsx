@@ -4,7 +4,9 @@ import { Outlet } from "react-router-dom";
 
 function MainLayout() {
     return (
-        <div className="min-h-screen bg-slate-950 text-white flex flex-col">
+        <div className="flex min-h-screen flex-col text-white">
+
+            <div className="app-backdrop" />
 
             <Navbar />
 
