@@ -87,8 +87,10 @@ function Navbar() {
                         <>
                             <NotificationBell />
 
-                            <div className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2">
-
+                            <Link
+                                to="/profile"
+                                className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2 transition hover:border-cyan-500/40 hover:bg-slate-900"
+                            >
                                 {user?.role === "ADMIN" ? (
                                     <ShieldCheck size={20} className="text-cyan-400" />
                                 ) : (
@@ -99,12 +101,12 @@ function Navbar() {
                                     <p className="text-sm font-semibold text-slate-100">
                                         {user?.username}
                                     </p>
+
                                     <p className="text-xs text-slate-500">
                                         {user?.role}
                                     </p>
                                 </div>
-
-                            </div>
+                            </Link>
 
                             <Button variant="outline" size="sm" onClick={logout}>
                                 <LogOut size={16} className="mr-2" />
@@ -160,10 +162,9 @@ function Navbar() {
                                     key={item.to}
                                     to={item.to}
                                     className={({ isActive }) =>
-                                        `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${
-                                            isActive
-                                                ? "bg-cyan-500/10 text-cyan-300"
-                                                : "text-slate-300 hover:bg-slate-900"
+                                        `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${isActive
+                                            ? "bg-cyan-500/10 text-cyan-300"
+                                            : "text-slate-300 hover:bg-slate-900"
                                         }`
                                     }
                                 >
@@ -178,17 +179,26 @@ function Navbar() {
                         {isAuthenticated ? (
                             <div className="flex items-center justify-between gap-3">
 
-                                <div className="flex items-center gap-2">
-                                    <UserCircle2 size={22} className="text-cyan-400" />
+                                <Link
+                                    to="/profile"
+                                    className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2 transition hover:border-cyan-500/40 hover:bg-slate-900"
+                                >
+                                    {user?.role === "ADMIN" ? (
+                                        <ShieldCheck size={20} className="text-cyan-400" />
+                                    ) : (
+                                        <UserCircle2 size={22} className="text-cyan-400" />
+                                    )}
+
                                     <div className="leading-tight">
                                         <p className="text-sm font-semibold text-slate-100">
                                             {user?.username}
                                         </p>
+
                                         <p className="text-xs text-slate-500">
                                             {user?.role}
                                         </p>
                                     </div>
-                                </div>
+                                </Link>
 
                                 <Button variant="outline" size="sm" onClick={logout}>
                                     <LogOut size={16} className="mr-2" />
