@@ -1,75 +1,81 @@
-# React + TypeScript + Vite
+# AI Resume Screener — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript frontend for the AI Resume Screener platform. Connects to the [Spring Boot backend](https://github.com/Risheek-Shrestha/ai-resume-screener) to let users manage profiles, apply for jobs, and get AI-driven resume scoring, and lets admins manage jobs, courses, and applications.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **React 19** + **TypeScript**
+- **Vite** for dev/build tooling
+- **React Router v7** for routing
+- **Tailwind CSS v4** for styling
+- **Axios** for API calls
+- **Sonner** for toast notifications
+- **Lucide React** / **React Icons** for icons
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
 
 ```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+src/
+├── components/
+│   ├── common/       # Shared/reusable components
+│   ├── forms/         # Form components
+│   ├── layout/        # MainLayout, AdminLayout, etc.
+│   └── ui/             # Base UI primitives
+├── constants/          # App-wide constants
+├── context/             # React context providers
+├── hooks/                # Custom hooks
+├── lib/                    # Utility libraries
+├── pages/
+│   ├── admin/          # Admin dashboard, jobs, courses, applications
+│   ├── auth/            # Login, register, forgot/reset password
+│   ├── dashboard/    # User dashboard
+│   ├── jobs/             # Job listing, details, apply
+│   ├── profile/        # Profile, education, applications
+│   └── resume/       # Resume upload, list, scoring
+├── routes/               # AppRoutes, RoleRoute (role-based route guards)
+├── services/            # API service modules (one per domain)
+├── types/                 # TypeScript types/interfaces
+└── utils/                 # Helper functions
 ```
+
+## Features
+
+- **Auth** — login, registration, forgot/reset password flows
+- **Role-based routing** — separate route trees for `USER` and `ADMIN` roles via `RoleRoute`
+- **Job board** — browse jobs, view details, apply
+- **Resume management** — upload resumes, view AI-generated resume scores
+- **Profile** — edit profile, manage education history
+- **Applications** — track submitted applications (user side); review/accept applications (admin side)
+- **Admin panel** — create/edit jobs and courses, manage applications
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- The [backend API](https://github.com/Risheek-Shrestha/ai-resume-screener) running (see that repo for setup)
+
+### Installation
+
+```bash
+git clone https://github.com/Risheek-Shrestha/ai-resume-screener-fronted.git
+cd ai-resume-screener-fronted
+npm install
+```
+
+### Environment Setup
+
+Configure the backend API base URL used by `src/services/api.ts` (e.g. via a `.env` file with a `VITE_API_BASE_URL` variable, depending on your setup).
+
+### Available Scripts
+
+```bash
+npm run dev       # Start the Vite dev server with HMR
+npm run build      # Type-check and build for production
+npm run preview   # Preview the production build locally
+npm run lint         # Run ESLint
+```
+
+## License
+
+This project currently has no license specified.
