@@ -22,9 +22,9 @@ function ForgotPassword() {
         setLoading(true);
 
         try {
-            await forgotPassword(email);
-            // Always show the same success state, whether or not the email
-            // exists, so we don't leak which accounts are registered.
+            await forgotPassword({
+                email,
+            });
             setSubmitted(true);
         } catch (err) {
             setError(getErrorMessage(err, "Something went wrong. Please try again."));

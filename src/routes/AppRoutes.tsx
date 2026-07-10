@@ -21,6 +21,9 @@ import ResumeScore from "../pages/resume/ResumeScore";
 import Profile from "../pages/profile/Profile";
 import EditProfile from "../pages/profile/EditProfile";
 import MyApplications from "../pages/profile/MyApplications";
+import EducationPage from "../pages/profile/Education";
+import EditEducation from "../pages/profile/EditEducation";
+import AddEducation from "../pages/profile/AddEducation";
 
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import CreateJob from "../pages/admin/CreateJob";
@@ -79,6 +82,11 @@ function AppRoutes() {
                             path="/applications"
                             element={<MyApplications />}
                         />
+                        <Route path="/education" element={<EducationPage />} />
+
+                        <Route path="/education/new" element={<AddEducation />} />
+
+                        <Route path="/education/:id/edit" element={<EditEducation />} />
 
                     </Route>
                 </Route>

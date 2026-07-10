@@ -23,12 +23,14 @@ import useAuth from "../../hooks/useAuth";
 
 import { getMyResumes } from "../../services/resumeService";
 import { getMyApplications } from "../../services/applicationService";
+import { getEducation } from "../../services/educationService";
 
 function Profile() {
     const { user, logout } = useAuth();
 
     const [resumeCount, setResumeCount] = useState<number | null>(null);
     const [applicationCount, setApplicationCount] = useState<number | null>(null);
+    const [educationCount, setEducationCount] = useState<number | null>(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -36,18 +38,21 @@ function Profile() {
         Promise.all([
             getMyResumes(),
             getMyApplications(),
+            getEducation(),
         ])
-            .then(([resumes, applications]) => {
+            .then(([resumes, applications, educations]) => {
                 if (cancelled) return;
 
                 setResumeCount(resumes.length);
                 setApplicationCount(applications.length);
+                setEducationCount(educations.length);
             })
             .catch(() => {
                 if (cancelled) return;
 
                 setResumeCount(null);
                 setApplicationCount(null);
+                setEducationCount(null);
             });
 
         return () => {
@@ -216,6 +221,25 @@ function Profile() {
 
                             <span className="font-display text-lg font-bold text-cyan-400">
                                 {applicationCount ?? "—"}
+                            </span>
+                        </div>
+                    </Link>
+
+                    <Link to="/education">
+                        <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-4 transition hover:border-cyan-500/40">
+                            <div className="flex items-center gap-3">
+                                <GraduationCap
+                                    size={18}
+                                    className="text-cyan-400"
+                                />
+
+                                <span className="text-sm font-medium text-slate-200">
+                                    Education
+                                </span>
+                            </div>
+
+                            <span className="font-display text-lg font-bold text-cyan-400">
+                                {educationCount ?? "—"}
                             </span>
                         </div>
                     </Link>

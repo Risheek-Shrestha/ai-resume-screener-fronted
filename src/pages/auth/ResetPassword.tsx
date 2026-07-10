@@ -43,7 +43,10 @@ function ResetPassword() {
         setLoading(true);
 
         try {
-            await resetPassword(token, newPassword);
+            await resetPassword({
+                token,
+                newPassword,
+            });
             navigate("/login", {
                 state: { successMessage: "Password reset. Please sign in with your new password." },
             });
