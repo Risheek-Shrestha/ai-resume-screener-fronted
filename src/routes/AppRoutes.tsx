@@ -28,8 +28,10 @@ import AdminJobs from "../pages/admin/AdminJobs";
 import EditJob from "../pages/admin/EditJobs";
 import AdminApplications from "../pages/admin/Applications";
 import AcceptedApplications from "../pages/admin/AcceptedApplications";
+import CreateCourse from "../pages/admin/CreateCourse";
+import AdminCourses from "../pages/admin/AdminCourses";
+import EditCourse from "../pages/admin/EditCourses";
 
-import ProtectedRoute from "./ProtectedRoute";
 import RoleRoute from "./RoleRoute";
 
 import MainLayout from "../components/layout/MainLayout";
@@ -113,6 +115,21 @@ function AppRoutes() {
                         <Route
                             path="/admin/jobs/:jobId/accepted"
                             element={<AcceptedApplications />}
+                        />
+
+                        <Route
+                            path="/admin/courses/create"
+                            element={<CreateCourse />}
+                        />
+
+                        <Route
+                            path="/admin/courses"
+                            element={<AdminCourses />}
+                        />
+
+                        <Route
+                            path="/admin/courses/:id/edit"
+                            element={<EditCourse />}
                         />
 
                     </Route>

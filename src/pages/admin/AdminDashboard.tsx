@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
+
 import {
     ShieldCheck,
     Plus,
@@ -9,6 +10,8 @@ import {
     ClipboardList,
     CheckCircle2,
     ArrowRight,
+    GraduationCap,
+    PlusCircle
 } from "lucide-react";
 
 import Card from "../../components/ui/Card";
@@ -23,6 +26,21 @@ const jobLinks = [
 const applicationLinks = [
     { title: "Review Applications", description: "Pick a job, then review its applicants", to: "/admin/jobs", icon: ClipboardList },
     { title: "Accepted Candidates", description: "Pick a job to see who was hired", to: "/admin/jobs", icon: CheckCircle2 },
+];
+
+const courseLinks = [
+    {
+        title: "Create Course",
+        description: "Add a new course",
+        to: "/admin/courses/create",
+        icon: PlusCircle,
+    },
+    {
+        title: "Manage Courses",
+        description: "Edit or delete existing courses",
+        to: "/admin/courses",
+        icon: GraduationCap,
+    },
 ];
 
 function AdminDashboard() {
@@ -40,10 +58,10 @@ function AdminDashboard() {
                     typeof data?.totalElements === "number"
                         ? data.totalElements
                         : Array.isArray(data)
-                        ? data.length
-                        : Array.isArray(data?.content)
-                        ? data.content.length
-                        : null;
+                            ? data.length
+                            : Array.isArray(data?.content)
+                                ? data.content.length
+                                : null;
                 setJobCount(count);
             })
             .catch(() => {
@@ -176,6 +194,49 @@ function AdminDashboard() {
                                     </div>
 
                                     <ArrowRight size={18} className="text-slate-600" />
+
+                                </div>
+                            </Card>
+                        </Link>
+                    ))}
+
+                </div>
+
+            </div>
+
+            <div className="mt-10">
+
+                <h2 className="mb-5 text-xl font-bold">
+                    Course Management
+                </h2>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+
+                    {courseLinks.map((link) => (
+                        <Link key={link.title} to={link.to}>
+                            <Card hover>
+                                <div className="flex items-center justify-between">
+
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500/10 text-cyan-400">
+                                            <link.icon size={20} />
+                                        </div>
+
+                                        <div>
+                                            <h3 className="font-semibold">
+                                                {link.title}
+                                            </h3>
+
+                                            <p className="mt-1 text-sm text-slate-400">
+                                                {link.description}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <ArrowRight
+                                        size={18}
+                                        className="text-slate-600"
+                                    />
 
                                 </div>
                             </Card>
