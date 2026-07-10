@@ -7,11 +7,18 @@ import {
     FileText,
     ClipboardList,
     LogOut,
+    Phone,
+    GraduationCap,
+    Calendar,
+    BookOpen,
+    Hash,
+    Pencil,
 } from "lucide-react";
 
 import Card from "../../components/ui/Card";
 import Badge from "../../components/ui/Badge";
 import Button from "../../components/common/Button";
+
 import useAuth from "../../hooks/useAuth";
 
 import { getMyResumes } from "../../services/resumeService";
@@ -26,13 +33,22 @@ function Profile() {
     useEffect(() => {
         let cancelled = false;
 
-        getMyResumes()
-            .then((data) => !cancelled && setResumeCount(data.length))
-            .catch(() => !cancelled && setResumeCount(null));
+        Promise.all([
+            getMyResumes(),
+            getMyApplications(),
+        ])
+            .then(([resumes, applications]) => {
+                if (cancelled) return;
 
-        getMyApplications()
-            .then((data) => !cancelled && setApplicationCount(data.length))
-            .catch(() => !cancelled && setApplicationCount(null));
+                setResumeCount(resumes.length);
+                setApplicationCount(applications.length);
+            })
+            .catch(() => {
+                if (cancelled) return;
+
+                setResumeCount(null);
+                setApplicationCount(null);
+            });
 
         return () => {
             cancelled = true;
@@ -48,10 +64,10 @@ function Profile() {
 
     return (
         <div className="mx-auto max-w-3xl px-6 py-16">
-
             <h1 className="font-display text-3xl font-bold">
                 Profile
             </h1>
+
             <p className="mt-1 text-sm text-slate-400">
                 Your account details, at a glance.
             </p>
@@ -68,14 +84,98 @@ function Profile() {
                         <h2 className="text-xl font-bold text-white">
                             {user?.username}
                         </h2>
+
                         <p className="mt-1 flex items-center justify-center gap-2 text-sm text-slate-400 sm:justify-start">
                             <Mail size={14} />
                             {user?.email}
                         </p>
-                        <Badge variant={user?.role === "ADMIN" ? "accent" : "primary"} className="mt-3">
+
+                        <Badge
+                            variant={user?.role === "ADMIN" ? "accent" : "primary"}
+                            className="mt-3"
+                        >
                             <ShieldCheck size={12} />
                             {user?.role}
                         </Badge>
+                    </div>
+
+                </div>
+
+                <div className="mt-8 border-t border-slate-800 pt-6">
+
+                    <h3 className="mb-4 text-sm font-semibold uppercase tracking-wide text-slate-400">
+                        Personal Information
+                    </h3>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                            <Phone size={18} className="text-cyan-400" />
+                            <div>
+                                <p className="text-xs text-slate-500">
+                                    Phone Number
+                                </p>
+
+                                <p className="text-sm text-slate-200">
+                                    {user?.phoneNumber ?? "-"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                            <Calendar size={18} className="text-cyan-400" />
+                            <div>
+                                <p className="text-xs text-slate-500">
+                                    Date of Birth
+                                </p>
+
+                                <p className="text-sm text-slate-200">
+                                    {user?.dateOfBirth
+                                        ? new Date(user.dateOfBirth).toLocaleDateString()
+                                        : "-"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                            <GraduationCap size={18} className="text-cyan-400" />
+                            <div>
+                                <p className="text-xs text-slate-500">
+                                    College
+                                </p>
+
+                                <p className="text-sm text-slate-200">
+                                    {user?.currentCollege ?? "-"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                            <BookOpen size={18} className="text-cyan-400" />
+                            <div>
+                                <p className="text-xs text-slate-500">
+                                    Course
+                                </p>
+
+                                <p className="text-sm text-slate-200">
+                                    {user?.currentCourse ?? "-"}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-800 bg-slate-950/40 p-4">
+                            <Hash size={18} className="text-cyan-400" />
+                            <div>
+                                <p className="text-xs text-slate-500">
+                                    Semester
+                                </p>
+
+                                <p className="text-sm text-slate-200">
+                                    {user?.currentSemester ?? "-"}
+                                </p>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -85,9 +185,16 @@ function Profile() {
                     <Link to="/resume">
                         <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-4 transition hover:border-cyan-500/40">
                             <div className="flex items-center gap-3">
-                                <FileText size={18} className="text-cyan-400" />
-                                <span className="text-sm font-medium text-slate-200">Resumes</span>
+                                <FileText
+                                    size={18}
+                                    className="text-cyan-400"
+                                />
+
+                                <span className="text-sm font-medium text-slate-200">
+                                    Resumes
+                                </span>
                             </div>
+
                             <span className="font-display text-lg font-bold text-cyan-400">
                                 {resumeCount ?? "—"}
                             </span>
@@ -97,9 +204,16 @@ function Profile() {
                     <Link to="/applications">
                         <div className="flex items-center justify-between rounded-xl border border-slate-800 bg-slate-950/40 px-4 py-4 transition hover:border-cyan-500/40">
                             <div className="flex items-center gap-3">
-                                <ClipboardList size={18} className="text-cyan-400" />
-                                <span className="text-sm font-medium text-slate-200">Applications</span>
+                                <ClipboardList
+                                    size={18}
+                                    className="text-cyan-400"
+                                />
+
+                                <span className="text-sm font-medium text-slate-200">
+                                    Applications
+                                </span>
                             </div>
+
                             <span className="font-display text-lg font-bold text-cyan-400">
                                 {applicationCount ?? "—"}
                             </span>
@@ -108,11 +222,23 @@ function Profile() {
 
                 </div>
 
-                <div className="mt-8 border-t border-slate-800 pt-6">
-                    <Button variant="outline" onClick={logout}>
+                <div className="mt-8 flex gap-3 border-t border-slate-800 pt-6">
+
+                    <Link to="/profile/edit">
+                        <Button>
+                            <Pencil size={16} className="mr-2" />
+                            Edit Profile
+                        </Button>
+                    </Link>
+
+                    <Button
+                        variant="outline"
+                        onClick={logout}
+                    >
                         <LogOut size={16} className="mr-2" />
                         Logout
                     </Button>
+
                 </div>
 
             </Card>

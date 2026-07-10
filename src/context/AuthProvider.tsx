@@ -1,7 +1,12 @@
 import type { ReactNode } from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+
 import { AuthContext } from "./AuthContext";
-import type { AuthResponse, User } from "../types/auth";
+
+import type { AuthResponse } from "../types/auth";
+import type { UserResponse } from "../types/user";
+
+import { getCurrentUser } from "../services/userService";
 import { setOnAuthFailure } from "../lib/axios";
 
 interface AuthProviderProps {
@@ -13,7 +18,7 @@ function AuthProvider({ children }: AuthProviderProps) {
         localStorage.getItem("accessToken")
     );
 
-    const [user, setUser] = useState<User | null>(() => {
+    const [user, setUser] = useState<UserResponse | null>(() => {
         try {
             const stored = localStorage.getItem("user");
             return stored ? JSON.parse(stored) : null;
@@ -22,38 +27,64 @@ function AuthProvider({ children }: AuthProviderProps) {
         }
     });
 
-    const isAuthenticated = accessToken != null;
+    const isAuthenticated = accessToken !== null;
 
-    function login(data: AuthResponse) {
-        const newUser: User = {
-            email: data.email,
-            username: data.username,
-            role: data.role,
-        };
-
-        setAccessToken(data.accessToken);
-        setUser(newUser);
+    const login = useCallback(async (data: AuthResponse) => {
 
         localStorage.setItem("accessToken", data.accessToken);
         localStorage.setItem("refreshToken", data.refreshToken);
-        localStorage.setItem("user", JSON.stringify(newUser));
-    }
 
-    function logout() {
+        setAccessToken(data.accessToken);
+
+        const profile = await getCurrentUser();
+
+        setUser(profile);
+        localStorage.setItem("user", JSON.stringify(profile));
+
+    }, []);
+
+    const logout = useCallback(() => {
+
         setAccessToken(null);
         setUser(null);
 
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-    }
+
+    }, []);
 
     useEffect(() => {
         setOnAuthFailure(logout);
-    }, []);
+    }, [logout]);
+
+    useEffect(() => {
+
+        if (!accessToken) {
+            return;
+        }
+
+        getCurrentUser()
+            .then((profile) => {
+                setUser(profile);
+                localStorage.setItem("user", JSON.stringify(profile));
+            })
+            .catch(() => {
+                logout();
+            });
+
+    }, [accessToken, logout]);
 
     return (
-        <AuthContext.Provider value={{ user, accessToken, isAuthenticated, login, logout }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                accessToken,
+                isAuthenticated,
+                login,
+                logout,
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

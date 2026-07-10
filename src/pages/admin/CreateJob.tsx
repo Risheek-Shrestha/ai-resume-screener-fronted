@@ -153,16 +153,14 @@ function CreateJob() {
                         <datalist id="job-type-options">
                             <option value="FULL_TIME" />
                             <option value="PART_TIME" />
-                            <option value="CONTRACT" />
                             <option value="INTERNSHIP" />
-                            <option value="REMOTE" />
+                            <option value="CONTRACT" />
                         </datalist>
 
                         <datalist id="experience-level-options">
-                            <option value="ENTRY_LEVEL" />
-                            <option value="MID_LEVEL" />
-                            <option value="SENIOR_LEVEL" />
-                            <option value="LEAD" />
+                            <option value="JUNIOR" />
+                            <option value="MID" />
+                            <option value="SENIOR" />
                         </datalist>
 
                     </div>

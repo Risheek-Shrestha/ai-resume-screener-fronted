@@ -1,3 +1,5 @@
+import type { UserResponse } from "../types/user";
+
 export type Role = "ADMIN" | "USER";
 
 export interface LoginRequest {
@@ -9,6 +11,11 @@ export interface RegisterRequest {
     username: string;
     email: string;
     password: string;
+    phoneNumber: string;
+    dateOfBirth: string;
+    currentCollege: string;
+    currentCourseId: number;
+    currentSemester: number;
 }
 
 export interface AuthResponse {
@@ -19,17 +26,11 @@ export interface AuthResponse {
     refreshToken: string;
 }
 
-export interface User {
-    email: string;
-    username: string;
-    role: Role;
-}
-
 export interface AuthContextType {
-    user: User | null;
+    user: UserResponse | null;
     accessToken: string | null;
     isAuthenticated: boolean;
-    login: (data: AuthResponse) => void;
+    login: (data: AuthResponse) => Promise<void>;
     logout: () => void;
 }
 
