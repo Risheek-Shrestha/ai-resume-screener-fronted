@@ -122,7 +122,7 @@ function AppRoutes() {
                         />
 
                         <Route
-                            path="/admin/jobs/:id/applications"
+                            path="/admin/jobs/:jobId/applications"
                             element={<AdminApplications />}
                         />
 
