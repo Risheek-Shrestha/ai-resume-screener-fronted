@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Compass } from "lucide-react";
 import useAuth from "../hooks/useAuth";
+import Seo from "../components/common/Seo";
 
 function NotFound() {
     const { user } = useAuth();
@@ -12,6 +13,12 @@ function NotFound() {
 
     return (
         <div className="relative flex min-h-[70vh] flex-col items-center justify-center px-6 py-20 text-center text-white">
+            <Seo
+                title="Page Not Found"
+                description="The page you're looking for doesn't exist."
+                path="/404"
+                noindex
+            />
             <div className="flex h-20 w-20 items-center justify-center rounded-full border border-slate-800 bg-slate-900">
                 <Compass className="text-cyan-400" size={36} />
             </div>

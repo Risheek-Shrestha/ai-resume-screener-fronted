@@ -1,89 +1,107 @@
-# SEO deliverables — ai-resume-screener-fronted
+# AI Resume Screener — Frontend
 
-Your app is a client-rendered Vite + React SPA (no SSR), deployed at
-`https://ai-resume-screener-fronted-three.vercel.app`. The backend
-(`ai-resume-screener`) is a pure REST API with no crawlable pages, so no
-SEO changes were needed there.
+[![CI](https://github.com/Risheek-Shrestha/ai-resume-screener-fronted/actions/workflows/ci.yml/badge.svg)](https://github.com/Risheek-Shrestha/ai-resume-screener-fronted/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-## What's in this folder — drop each file into the matching path in the repo
+React + TypeScript frontend for the AI Resume Screener platform. Connects to the [Spring Boot backend](https://github.com/Risheek-Shrestha/ai-resume-screener) to let users manage profiles, apply for jobs, and get AI-driven resume scoring, and lets admins manage jobs, courses, and applications.
 
-| File | Destination |
-|---|---|
-| `index.html` | `/index.html` (repo root) |
-| `robots.txt` | `/public/robots.txt` |
-| `sitemap.xml` | `/public/sitemap.xml` |
-| `site.webmanifest` | `/public/site.webmanifest` |
-| `Seo.tsx` | `/src/components/common/Seo.tsx` (new file) |
-| `Index.tsx` | `/src/pages/Index.tsx` |
-| `Login.tsx` | `/src/pages/auth/Login.tsx` |
-| `Register.tsx` | `/src/pages/auth/Register.tsx` |
-| `ForgotPassword.tsx` | `/src/pages/auth/ForgotPassword.tsx` |
-| `ResetPassword.tsx` | `/src/pages/auth/ResetPassword.tsx` |
-| `NotFound.tsx` | `/src/pages/NotFound.tsx` |
+**Live app:** [ai-resume-screener-fronted-three.vercel.app](https://ai-resume-screener-fronted-three.vercel.app)
+**Backend:** [github.com/Risheek-Shrestha/ai-resume-screener](https://github.com/Risheek-Shrestha/ai-resume-screener)
 
-All of this was applied to a clone of your repo and verified with `tsc -b` —
-it compiles clean.
+> The backend API runs on Render's free tier and spins down after inactivity — the first request after idle can take up to 50 seconds to respond.
 
-## What changed
+## Tech Stack
 
-**`index.html`** — real `<title>`, meta description, keywords, canonical URL,
-robots directive, favicon/apple-touch-icon/manifest links, full Open Graph +
-Twitter Card tags, and a `WebApplication` JSON-LD block. This is the static
-fallback that social-media link scrapers and any bot that doesn't execute JS
-will see.
+- **React 19** + **TypeScript**
+- **Vite** for dev/build tooling
+- **React Router v7** for routing
+- **Tailwind CSS v4** for styling
+- **Axios** for API calls, with automatic access-token refresh on 401 responses
+- **Sonner** for toast notifications
+- **Lucide React** / **React Icons** for icons
 
-**`Seo.tsx`** (new) — a tiny reusable component you drop at the top of any
-page. It updates `document.title`, meta description, canonical link, and
-OG/Twitter tags on route change (since this is a client-rendered SPA, this
-is what makes each route distinct in the address bar / when Googlebot
-renders it — see caveat below). Pass `noindex` for pages that should never
-be indexed.
+## Features
 
-```tsx
-<Seo
-  title="Log In"
-  description="Log in to your AI Resume Screener account..."
-  path="/login"
-/>
+- **Auth** — login, registration, forgot/reset password flows, with JWT access + refresh token handling
+- **Role-based routing** — separate route trees for `USER` and `ADMIN` roles via `RoleRoute`
+- **Job board** — browse jobs, view details, apply
+- **Resume management** — upload resumes, view AI-generated resume scores and improvement suggestions
+- **Profile** — edit profile, manage education history
+- **Applications** — track submitted applications (user side); review, shortlist, hire, or reject applicants (admin side)
+- **Admin panel** — create/edit jobs and courses, manage applications end to end
+
+## Project Structure
+
+```
+src/
+├── components/
+│   ├── common/         # Shared/reusable components (Button, Loader, Input, ...)
+│   ├── forms/           # Form components
+│   ├── layout/          # MainLayout, AdminLayout, Sidebar, Navbar
+│   └── ui/               # Base UI primitives (Card, Badge, Table, Modal, ...)
+├── constants/            # App-wide constants
+├── context/               # React context providers (AuthContext, ...)
+├── hooks/                  # Custom hooks
+├── lib/                      # Utility libraries
+├── pages/
+│   ├── admin/            # Admin dashboard, jobs, courses, applications
+│   ├── auth/              # Login, register, forgot/reset password
+│   ├── dashboard/      # User dashboard
+│   ├── jobs/               # Job listing, details, apply
+│   ├── profile/          # Profile, education, applications
+│   └── resume/         # Resume upload, list, scoring
+├── routes/                 # AppRoutes, RoleRoute (role-based route guards)
+├── services/              # API service modules (one per domain)
+├── types/                   # TypeScript types/interfaces
+└── utils/                   # Helper functions
 ```
 
-**Public pages wired up:** `/` (Index), `/login`, `/register`,
-`/forgot-password`, `/reset-password`, and `NotFound` (marked `noindex`).
+## Getting Started
 
-**`robots.txt`** — allows the public/auth pages, disallows the gated app
-areas (`/dashboard`, `/jobs`, `/resume`, `/profile`, `/education`,
-`/applications`, `/admin`) since they redirect unauthenticated users anyway
-and add no SEO value, and points at the sitemap.
+### Prerequisites
 
-**`sitemap.xml`** — only the actually-public, indexable routes. Nothing
-behind `RoleRoute` is included, since Google can't get past the redirect
-regardless.
+- Node.js 18+
+- The [backend API](https://github.com/Risheek-Shrestha/ai-resume-screener) running locally, or point at the live deployment above
 
-## Still on you (things I can't generate)
+### Installation
 
-1. **`og-image.png`** — I referenced `/og-image.png` (1200×630) in
-   `index.html` and `Seo.tsx` for social share previews, but you need to
-   design/export the actual image and drop it in `/public`. Until it
-   exists, social previews will show a broken image.
-2. **Verify the canonical domain** — I used
-   `https://ai-resume-screener-fronted-three.vercel.app` from your README.
-   If you later move to a custom domain, update it in `index.html`,
-   `Seo.tsx` (`SITE_URL` constant), `robots.txt`, and `sitemap.xml`.
-3. **Google Search Console** — submit `sitemap.xml` there once deployed.
+```bash
+git clone https://github.com/Risheek-Shrestha/ai-resume-screener-fronted.git
+cd ai-resume-screener-fronted
+npm install
+```
 
-## Important caveat: SPA + noindex on gated routes
+### Environment Setup
 
-Marking `/dashboard`, `/admin`, etc. `noindex` in a page component only
-helps if a crawler actually executes your JS and reaches that render (rare
-for anything but Googlebot, and even then it's unreliable since
-unauthenticated visits hit your `RoleRoute` redirect before that page ever
-renders). `robots.txt` `Disallow` is the primary defense here — the
-in-component `noindex` is just defense-in-depth for cases where a page
-briefly renders before a redirect fires.
+Copy `.env.example` to `.env` and set the backend API base URL:
 
-If you ever want jobs (`/jobs`) to be genuinely indexable for SEO (a common
-ask — "let people find your job board via Google"), that requires making
-job listings public (no `RoleRoute` gate) and ideally moving to SSR/SSG
-(Next.js, or Vite SSR) since search engines and social scrapers don't
-reliably execute client-side JS for meta tags. Happy to help with that if
-it's a goal — just say the word.
+```bash
+cp .env.example .env
+```
+
+```dotenv
+VITE_API_BASE_URL=http://localhost:8081/api/v1
+```
+
+Vite bakes `VITE_*` variables in at build time, so this must be set before running `npm run dev` or `npm run build`.
+
+### Available Scripts
+
+```bash
+npm run dev       # Start the Vite dev server with HMR
+npm run build     # Type-check and build for production
+npm run preview   # Preview the production build locally
+npm run lint       # Run ESLint
+```
+
+## Deployment
+
+The live app is deployed on Vercel. Key points if you're deploying your own fork:
+
+- Set `VITE_API_BASE_URL` as an environment variable in the Vercel project settings (not just in a local `.env`, since that file isn't committed).
+- `vercel.json` includes a SPA fallback rewrite so client-side routes (e.g. `/login`, `/jobs/123`) resolve correctly on direct navigation and page refresh instead of 404ing.
+- The backend's CORS configuration must allow your deployed frontend's origin (`APP_FRONTEND_URL` on the backend).
+
+## License
+
+MIT — see [LICENSE](LICENSE).

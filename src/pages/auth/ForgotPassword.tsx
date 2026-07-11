@@ -8,6 +8,7 @@ import Input from "../../components/common/Input";
 
 import { forgotPassword } from "../../services/authService";
 import { getErrorMessage } from "../../utils/getErrorMessage";
+import Seo from "../../components/common/Seo";
 
 function ForgotPassword() {
     const [email, setEmail] = useState("");
@@ -35,6 +36,12 @@ function ForgotPassword() {
 
     return (
         <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 px-6 py-16">
+
+            <Seo
+                title="Forgot Password"
+                description="Reset your AI Resume Screener account password."
+                path="/forgot-password"
+            />
 
             <div className="app-backdrop" />
 

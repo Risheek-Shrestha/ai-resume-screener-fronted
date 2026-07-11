@@ -10,6 +10,7 @@ import {
     Users,
 } from "lucide-react";
 import useAuth from "../hooks/useAuth";
+import Seo from "../components/common/Seo";
 
 const features = [
     {
@@ -65,6 +66,11 @@ function Index() {
 
     return (
         <div>
+            <Seo
+                title="AI Resume Screener — AI-Powered Resume Scoring & Job Matching"
+                description="Upload your resume and get instant AI-driven ATS compatibility scores, personalized improvement suggestions, and apply to jobs that match your skills."
+                path="/"
+            />
 
             {/* Hero */}
 
