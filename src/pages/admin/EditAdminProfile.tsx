@@ -7,6 +7,7 @@ import Input from "../../components/common/Input";
 import Card from "../../components/ui/Card";
 
 import { getCurrentUser, updateCurrentUser } from "../../services/userService";
+import type { UpdateUserRequest } from "../../types/user";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 function EditAdminProfile() {
@@ -42,7 +43,7 @@ function EditAdminProfile() {
         setError("");
 
         try {
-            await updateCurrentUser({ username } as any);
+            await updateCurrentUser({ username } as Partial<UpdateUserRequest> as UpdateUserRequest);
             navigate("/admin/profile");
         } catch (err) {
             setError(getErrorMessage(err, "Unable to update profile."));

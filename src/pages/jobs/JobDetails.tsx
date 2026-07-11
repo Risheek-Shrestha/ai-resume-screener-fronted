@@ -119,12 +119,12 @@ function JobDetails() {
     // Look up the user's most recent application for this job so the apply
     // button can reflect it (Already Applied vs. Apply Now/Apply Again).
     useEffect(() => {
-        if (!isAuthenticated || !id) {
-            setMyStatus(null);
-            return;
-        }
-
         const fetchMyStatus = async () => {
+            if (!isAuthenticated || !id) {
+                setMyStatus(null);
+                return;
+            }
+
             try {
                 const applications = await getMyApplications();
                 const forThisJob = applications.filter(

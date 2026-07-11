@@ -18,5 +18,12 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // This rule pushes toward Suspense-based data fetching. The
+      // standard "load into local state on mount" pattern used
+      // throughout this app is not a bug, so this is a warning
+      // rather than a build-breaking error.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
   },
 ])

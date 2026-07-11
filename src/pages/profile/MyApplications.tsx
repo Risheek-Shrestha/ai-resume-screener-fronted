@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getMyApplications } from "../../services/applicationService";
@@ -34,11 +34,7 @@ function MyApplications() {
 
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        loadApplications();
-    }, []);
-
-    const loadApplications = async () => {
+    const loadApplications = useCallback(async () => {
 
         try {
             setLoading(true);
@@ -54,7 +50,11 @@ function MyApplications() {
             setLoading(false);
         }
 
-    };
+    }, []);
+
+    useEffect(() => {
+        loadApplications();
+    }, [loadApplications]);
 
     return (
 

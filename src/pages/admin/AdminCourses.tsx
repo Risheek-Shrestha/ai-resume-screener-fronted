@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
     GraduationCap,
@@ -24,11 +24,7 @@ function AdminCourses() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        loadCourses();
-    }, []);
-
-    async function loadCourses() {
+    const loadCourses = useCallback(async () => {
         try {
             setCourses(await getCourses());
         } catch (err) {
@@ -41,7 +37,11 @@ function AdminCourses() {
         } finally {
             setLoading(false);
         }
-    }
+    }, []);
+
+    useEffect(() => {
+        loadCourses();
+    }, [loadCourses]);
 
     async function handleDelete(id: number) {
 

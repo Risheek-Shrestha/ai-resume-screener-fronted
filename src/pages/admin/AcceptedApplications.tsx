@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import { getAcceptedApplications } from "../../services/applicationService";
@@ -27,11 +27,7 @@ function AcceptedApplications() {
 
     const [error, setError] = useState("");
 
-    useEffect(() => {
-        loadApplications();
-    }, [jobId]);
-
-    const loadApplications = async () => {
+    const loadApplications = useCallback(async () => {
 
         if (!jobId) return;
 
@@ -54,7 +50,11 @@ function AcceptedApplications() {
 
         }
 
-    };
+    }, [jobId]);
+
+    useEffect(() => {
+        loadApplications();
+    }, [loadApplications]);
 
     const viewResume = async (applicationId: number) => {
 

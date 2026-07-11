@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { deleteJob, getMyJobs } from "../../services/jobService";
@@ -33,11 +33,7 @@ function AdminJobs() {
     const [pendingDelete, setPendingDelete] = useState<JobResponse | null>(null);
     const [deleting, setDeleting] = useState(false);
 
-    useEffect(() => {
-        loadJobs();
-    }, []);
-
-    const loadJobs = async () => {
+    const loadJobs = useCallback(async () => {
 
         try {
 
@@ -62,7 +58,11 @@ function AdminJobs() {
 
         }
 
-    };
+    }, []);
+
+    useEffect(() => {
+        loadJobs();
+    }, [loadJobs]);
 
     const confirmDelete = async () => {
         if (!pendingDelete) return;

@@ -13,6 +13,7 @@ import Card from "../../components/ui/Card";
 import Button from "../../components/common/Button";
 import ScoreGauge from "../../components/ui/ScoreGauge";
 import EmptyState from "../../components/ui/EmptyState";
+import { getErrorMessage } from "../../utils/getErrorMessage";
 
 function KeywordChips({
     keywords,
@@ -22,7 +23,7 @@ function KeywordChips({
     tone: "matched" | "missing";
 }) {
 
-    let items: string[] = [];
+    let items: string[];
 
     try {
         const parsed = JSON.parse(keywords);
@@ -121,13 +122,9 @@ function ResumeScore() {
 
             setScore(response);
 
-        } catch (err: any) {
+        } catch (err) {
 
-            if (err.response?.data?.message) {
-                setError(err.response.data.message);
-            } else {
-                setError("Unable to calculate ATS score.");
-            }
+            setError(getErrorMessage(err, "Unable to calculate ATS score."));
 
         } finally {
             setLoadingScore(false);

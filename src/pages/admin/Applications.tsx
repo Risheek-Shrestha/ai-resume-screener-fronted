@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { downloadResumeForApplication } from "../../services/resumeService";
 
@@ -38,11 +38,7 @@ function AdminApplications() {
     const [error, setError] = useState("");
     const [updatingId, setUpdatingId] = useState<number | null>(null);
 
-    useEffect(() => {
-        loadApplications();
-    }, [jobId]);
-
-    const loadApplications = async () => {
+    const loadApplications = useCallback(async () => {
 
         if (!jobId) return;
 
@@ -65,7 +61,11 @@ function AdminApplications() {
 
         }
 
-    };
+    }, [jobId]);
+
+    useEffect(() => {
+        loadApplications();
+    }, [loadApplications]);
 
     const changeStatus = async (applicationId: number, status: string) => {
 

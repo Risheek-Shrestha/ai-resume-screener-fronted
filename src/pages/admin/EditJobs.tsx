@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import {
@@ -37,11 +37,7 @@ function EditJob() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
-    useEffect(() => {
-        loadJob();
-    }, []);
-
-    const loadJob = async () => {
+    const loadJob = useCallback(async () => {
 
         if (!id) return;
 
@@ -71,7 +67,11 @@ function EditJob() {
 
         }
 
-    };
+    }, [id]);
+
+    useEffect(() => {
+        loadJob();
+    }, [loadJob]);
 
     const addSkill = () => {
 

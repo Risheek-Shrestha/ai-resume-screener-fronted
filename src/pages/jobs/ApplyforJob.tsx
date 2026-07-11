@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -137,19 +137,7 @@ function ApplyForJob() {
     const [result, setResult] =
         useState<ApplicationResultResponse | null>(null);
 
-    useEffect(() => {
-        loadResumes();
-
-        if (id) {
-            getJobsById(Number(id))
-                .then(setJob)
-                .catch(() => {
-                    // Non-critical — the page still works with just the ID shown.
-                });
-        }
-    }, [id]);
-
-    const loadResumes = async () => {
+    const loadResumes = useCallback(async () => {
         try {
             setLoadingResumes(true);
             setError("");
@@ -166,7 +154,19 @@ function ApplyForJob() {
         } finally {
             setLoadingResumes(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        loadResumes();
+
+        if (id) {
+            getJobsById(Number(id))
+                .then(setJob)
+                .catch(() => {
+                    // Non-critical — the page still works with just the ID shown.
+                });
+        }
+    }, [id, loadResumes]);
 
 
     const handleUpload = async () => {

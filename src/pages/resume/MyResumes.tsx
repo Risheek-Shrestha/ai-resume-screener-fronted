@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { getMyResumes, deleteResume } from "../../services/resumeService";
@@ -23,11 +23,7 @@ function MyResumes() {
     const [pendingDelete, setPendingDelete] = useState<ResumeResponse | null>(null);
     const [deleting, setDeleting] = useState(false);
 
-    useEffect(() => {
-        loadResumes();
-    }, []);
-
-    const loadResumes = async () => {
+    const loadResumes = useCallback(async () => {
         try {
             setLoading(true);
             setError("");
@@ -40,7 +36,11 @@ function MyResumes() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
+
+    useEffect(() => {
+        loadResumes();
+    }, [loadResumes]);
 
     const confirmDelete = async () => {
         if (!pendingDelete) return;
