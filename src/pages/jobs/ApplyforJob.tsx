@@ -4,9 +4,11 @@ import { Link, useParams } from "react-router-dom";
 
 import { applyForJob } from "../../services/applicationService";
 import { getMyResumes, uploadResume } from "../../services/resumeService";
+import { getJobsById } from "../../services/jobService";
 
 import type { ResumeResponse } from "../../types/resume";
 import type { ApplicationResultResponse } from "../../types/application";
+import type { JobResponse } from "../../types/job";
 
 import {
     AlertTriangle,
@@ -118,6 +120,8 @@ const scoreLevelTone = (level?: string) => {
 function ApplyForJob() {
     const { id } = useParams();
 
+    const [job, setJob] = useState<JobResponse | null>(null);
+
     const [resumes, setResumes] = useState<ResumeResponse[]>([]);
     const [selectedResumeId, setSelectedResumeId] = useState<number | null>(null);
 
@@ -135,7 +139,15 @@ function ApplyForJob() {
 
     useEffect(() => {
         loadResumes();
-    }, []);
+
+        if (id) {
+            getJobsById(Number(id))
+                .then(setJob)
+                .catch(() => {
+                    // Non-critical — the page still works with just the ID shown.
+                });
+        }
+    }, [id]);
 
     const loadResumes = async () => {
         try {
@@ -230,7 +242,7 @@ function ApplyForJob() {
             {!result && (
                 <div className="mb-8">
                     <h1 className="font-display text-4xl font-bold">
-                        Apply for Job
+                        {job ? `Apply for ${job.title}` : "Apply for Job"}
                     </h1>
                     <p className="mt-2 text-sm text-slate-400">
                         Job ID: <span className="text-slate-200">{id}</span>
