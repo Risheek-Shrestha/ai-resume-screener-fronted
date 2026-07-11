@@ -99,7 +99,7 @@ function MyApplications() {
 
                     {applications.map(application => (
 
-                        <Card key={application.id}>
+                        <Card key={application.applicationId}>
 
                             <div className="flex flex-wrap items-start justify-between gap-4">
 
@@ -108,7 +108,7 @@ function MyApplications() {
                                         {application.jobTitle}
                                     </h2>
                                     <p className="mt-1 text-xs text-slate-500">
-                                        Application #{application.id} &middot; Resume #{application.resumeId}
+                                        Application #{application.applicationId} &middot; Resume #{application.resumeId}
                                     </p>
                                 </div>
 
@@ -135,7 +135,7 @@ function MyApplications() {
                                         Applied On
                                     </p>
                                     <p className="mt-1 text-slate-300">
-                                        {formatDate(application.applicationTime)}
+                                        {formatDate(application.appliedAt)}
                                     </p>
                                 </div>
 

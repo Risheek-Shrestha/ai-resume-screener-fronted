@@ -16,13 +16,13 @@ import {
 const links = [
     {
         heading: "Recruiter Tools",
-        items: [{ to: "/admin", label: "Overview", icon: LayoutDashboard, end: true }],
+        items: [{ to: "/admin", label: "Overview", icon: LayoutDashboard, end: true, exclusive : false }],
     },
     {
         heading: "Jobs",
         items: [
-            { to: "/admin/jobs", label: "Posted Jobs", icon: Briefcase, end: true },
-            { to: "/admin/jobs/create", label: "Create Job", icon: Plus, end: false },
+            { to: "/admin/jobs", label: "Posted Jobs", icon: Briefcase, end: true, exclusive : false },
+            { to: "/admin/jobs/create", label: "Create Job", icon: Plus, end: false, exclusive : false },
         ],
     },
     {
@@ -52,12 +52,14 @@ const links = [
                 label: "Create Course",
                 icon: PlusCircle,
                 end: false,
+                exclusive : false,
             },
             {
                 to: "/admin/courses",
                 label: "Manage Courses",
                 icon: GraduationCap,
                 end: false,
+                exclusive : false,
             },
         ],
     },

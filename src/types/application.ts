@@ -1,9 +1,5 @@
 export type ApplicationStatus = "APPLIED" | "SHORTLISTED" | "HIRED" | "REJECTED";
 
-// Matches ApplicationResponse.java exactly — the backend field is
-// `applicationId` and `appliedAt`, not `id` / `applicationTime`. Using the
-// wrong keys here was producing `application/undefined/download` requests
-// when viewing resumes, and blank "Applied On" dates.
 export interface ApplicationResponse {
     applicationId: number;
     jobId: number;
