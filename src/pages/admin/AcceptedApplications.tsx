@@ -79,7 +79,7 @@ function AcceptedApplications() {
             header: "Application",
             cell: (application) => (
                 <div>
-                    <p className="font-semibold text-white">#{application.id}</p>
+                    <p className="font-semibold text-white">#{application.applicationId}</p>
                     <p className="mt-0.5 text-xs text-slate-500">Resume #{application.resumeId}</p>
                 </div>
             ),
@@ -93,7 +93,7 @@ function AcceptedApplications() {
         {
             header: "Applied On",
             cell: (application) => (
-                <span className="text-slate-300">{formatDate(application.applicationTime)}</span>
+                <span className="text-slate-300">{formatDate(application.appliedAt)}</span>
             ),
         },
         {
@@ -109,7 +109,7 @@ function AcceptedApplications() {
             header: "Resume",
             align: "right",
             cell: (application) => (
-                <Button variant="outline" size="sm" onClick={() => viewResume(application.id)}>
+                <Button variant="outline" size="sm" onClick={() => viewResume(application.applicationId)}>
                     <Eye size={14} className="mr-1.5" />
                     View
                 </Button>
@@ -163,7 +163,7 @@ function AcceptedApplications() {
                     <Table
                         columns={columns}
                         data={applications}
-                        keyField={(application) => application.id}
+                        keyField={(application) => application.applicationId}
                     />
                 </div>
             )}

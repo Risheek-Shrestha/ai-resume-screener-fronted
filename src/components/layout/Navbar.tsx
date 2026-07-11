@@ -19,8 +19,9 @@ function Navbar() {
     const [menuOpen, setMenuOpen] = useState(false);
     const [lastPathname, setLastPathname] = useState(location.pathname);
 
-    // Close the mobile menu when the route changes. Adjusting state during
-    // render (rather than in an effect) avoids an extra render pass.
+    const isAdmin = user?.role === "ADMIN";
+    const profilePath = isAdmin ? "/admin/profile" : "/profile";
+
     if (location.pathname !== lastPathname) {
         setLastPathname(location.pathname);
         setMenuOpen(false);
@@ -38,13 +39,14 @@ function Navbar() {
 
     const activeLink = "text-cyan-400";
 
-    const navItems = [
-        { to: "/jobs", label: "Jobs", show: true },
-        { to: "/dashboard", label: "Dashboard", show: isAuthenticated },
-        { to: "/resume", label: "My Resumes", show: isAuthenticated },
-        { to: "/applications", label: "Applications", show: isAuthenticated },
-        { to: "/admin", label: "Admin", show: isAuthenticated && user?.role === "ADMIN" },
-    ];
+    const navItems = isAdmin
+        ? [{ to: "/admin", label: "Admin", show: true }]
+        : [
+              { to: "/jobs", label: "Jobs", show: true },
+              { to: "/dashboard", label: "Dashboard", show: isAuthenticated },
+              { to: "/resume", label: "My Resumes", show: isAuthenticated },
+              { to: "/applications", label: "Applications", show: isAuthenticated },
+          ];
 
     return (
         <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-lg">
@@ -88,10 +90,10 @@ function Navbar() {
                             <NotificationBell />
 
                             <Link
-                                to="/profile"
+                                to={profilePath}
                                 className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2 transition hover:border-cyan-500/40 hover:bg-slate-900"
                             >
-                                {user?.role === "ADMIN" ? (
+                                {isAdmin ? (
                                     <ShieldCheck size={20} className="text-cyan-400" />
                                 ) : (
                                     <UserCircle2 size={22} className="text-cyan-400" />
@@ -169,6 +171,7 @@ function Navbar() {
                                     }
                                 >
                                     {item.to === "/dashboard" && <LayoutDashboard size={16} />}
+                                    {item.to === "/admin" && <ShieldCheck size={16} />}
                                     {item.label}
                                 </NavLink>
                             ))}
@@ -180,10 +183,10 @@ function Navbar() {
                             <div className="flex items-center justify-between gap-3">
 
                                 <Link
-                                    to="/profile"
+                                    to={profilePath}
                                     className="flex items-center gap-2 rounded-xl border border-slate-800 bg-slate-900/60 px-3 py-2 transition hover:border-cyan-500/40 hover:bg-slate-900"
                                 >
-                                    {user?.role === "ADMIN" ? (
+                                    {isAdmin ? (
                                         <ShieldCheck size={20} className="text-cyan-400" />
                                     ) : (
                                         <UserCircle2 size={22} className="text-cyan-400" />

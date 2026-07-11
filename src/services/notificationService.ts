@@ -1,8 +1,6 @@
 import api from "../lib/axios";
 import type { NotificationPageResponse } from "../types/notification";
 
-// See types/notification.ts for the assumed backend contract.
-
 export const getNotifications = async (
     page: number,
     size: number
@@ -23,3 +21,7 @@ export const markNotificationRead = async (id: number): Promise<void> => {
 export const markAllNotificationsRead = async (): Promise<void> => {
     await api.put("/notifications/read-all");
 };
+
+export async function clearAllNotifications(): Promise<void> {
+    await api.delete("/notifications");
+}

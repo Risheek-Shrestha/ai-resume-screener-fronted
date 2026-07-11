@@ -4,37 +4,97 @@ import {
     LayoutDashboard,
     Briefcase,
     Plus,
+    ClipboardList,
+    CheckCircle2,
+    GraduationCap,
+    PlusCircle,
     Menu,
     X,
     ArrowLeft,
 } from "lucide-react";
 
 const links = [
-    { to: "/admin", label: "Overview", icon: LayoutDashboard, end: true },
-    { to: "/admin/jobs", label: "Posted Jobs", icon: Briefcase, end: false },
-    { to: "/admin/jobs/create", label: "Create Job", icon: Plus, end: false },
+    {
+        heading: "Recruiter Tools",
+        items: [{ to: "/admin", label: "Overview", icon: LayoutDashboard, end: true }],
+    },
+    {
+        heading: "Jobs",
+        items: [
+            { to: "/admin/jobs", label: "Posted Jobs", icon: Briefcase, end: true },
+            { to: "/admin/jobs/create", label: "Create Job", icon: Plus, end: false },
+        ],
+    },
+    {
+        heading: "Applications",
+        items: [
+            {
+                to: "/admin/jobs",
+                label: "Review Applications",
+                icon: ClipboardList,
+                end: false,
+                exclusive: true,
+            },
+            {
+                to: "/admin/jobs",
+                label: "Accepted Candidates",
+                icon: CheckCircle2,
+                end: false,
+                exclusive: true,
+            },
+        ],
+    },
+    {
+        heading: "Course Management",
+        items: [
+            {
+                to: "/admin/courses/create",
+                label: "Create Course",
+                icon: PlusCircle,
+                end: false,
+            },
+            {
+                to: "/admin/courses",
+                label: "Manage Courses",
+                icon: GraduationCap,
+                end: false,
+            },
+        ],
+    },
 ];
 
 function SidebarLinks({ onNavigate }: { onNavigate?: () => void }) {
     return (
-        <nav className="flex flex-1 flex-col gap-1">
-            {links.map((link) => (
-                <NavLink
-                    key={link.to}
-                    to={link.to}
-                    end={link.end}
-                    onClick={onNavigate}
-                    className={({ isActive }) =>
-                        `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition ${
-                            isActive
-                                ? "bg-cyan-500/10 text-cyan-300 ring-1 ring-inset ring-cyan-500/25"
-                                : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
-                        }`
-                    }
-                >
-                    <link.icon size={18} />
-                    {link.label}
-                </NavLink>
+        <nav className="flex flex-1 flex-col gap-6 overflow-y-auto">
+            {links.map((section) => (
+                <div key={section.heading}>
+                    <p className="mb-2 px-3 text-xs font-bold uppercase tracking-widest text-slate-500">
+                        {section.heading}
+                    </p>
+
+                    <div className="space-y-1">
+                        {section.items.map((link) => (
+                            <NavLink
+                                key={link.to + link.label}
+                                to={link.to}
+                                end={link.end}
+                                onClick={onNavigate}
+                                className={({ isActive }) => {
+                                    const active = link.exclusive ? false : isActive;
+
+                                    return `flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition ${
+                                        active
+                                            ? "bg-cyan-500/10 text-cyan-300 ring-1 ring-inset ring-cyan-500/25"
+                                            : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-100"
+                                    }`;
+                                }}
+                            >
+                                <link.icon size={18} />
+                                {link.label}
+                            </NavLink>
+                        ))}
+                    </div>
+                </div>
             ))}
         </nav>
     );
@@ -103,9 +163,6 @@ function Sidebar() {
 
             {/* Desktop sidebar */}
             <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 flex-col border-r border-slate-800 bg-slate-950/40 px-4 py-6 md:flex">
-                <p className="mb-4 px-3.5 font-display text-xs font-bold uppercase tracking-widest text-slate-500">
-                    Recruiter Tools
-                </p>
 
                 <SidebarLinks />
 

@@ -39,6 +39,8 @@ import RoleRoute from "./RoleRoute";
 
 import MainLayout from "../components/layout/MainLayout";
 import AdminLayout from "../components/layout/AdminLayout";
+import AdminProfile from "../pages/admin/AdminProfile";
+import EditAdminProfile from "../pages/admin/EditAdminProfile";
 
 function AppRoutes() {
     return (
@@ -99,6 +101,10 @@ function AppRoutes() {
                             path="/admin"
                             element={<AdminDashboard />}
                         />
+
+                        <Route path="/admin/profile" element={<AdminProfile />} />
+
+                        <Route path="/admin/editprofile" element={<EditAdminProfile />} />
 
                         <Route
                             path="/admin/jobs"

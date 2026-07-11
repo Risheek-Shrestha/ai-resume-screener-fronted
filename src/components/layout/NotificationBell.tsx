@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, BriefcaseBusiness, CheckCheck, ClipboardCheck, Loader2 } from "lucide-react";
+import { Bell, BriefcaseBusiness, CheckCheck, ClipboardCheck, Loader2, Trash2 } from "lucide-react";
 
 import useAuth from "../../hooks/useAuth";
 import { formatDateTime } from "../../utils/date";
@@ -9,6 +9,7 @@ import {
     getUnreadCount,
     markAllNotificationsRead,
     markNotificationRead,
+    clearAllNotifications,
 } from "../../services/notificationService";
 import type { NotificationResponse } from "../../types/notification";
 
@@ -27,6 +28,7 @@ function NotificationBell() {
     const [notifications, setNotifications] = useState<NotificationResponse[]>([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [clearing, setClearing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const panelRef = useRef<HTMLDivElement>(null);
@@ -130,6 +132,22 @@ function NotificationBell() {
         }
     }
 
+    async function handleClearAll() {
+        const previous = notifications;
+        setClearing(true);
+        setNotifications([]);
+        setUnreadCount(0);
+        try {
+            await clearAllNotifications();
+        } catch {
+            // Roll back on failure so the user isn't left thinking it worked.
+            setNotifications(previous);
+            setError("Couldn't clear notifications.");
+        } finally {
+            setClearing(false);
+        }
+    }
+
     return (
         <div className="relative" ref={panelRef}>
             <button
@@ -152,16 +170,31 @@ function NotificationBell() {
 
                     <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
                         <p className="text-sm font-semibold text-white">Notifications</p>
-                        {notifications.some((n) => !n.read) && (
-                            <button
-                                type="button"
-                                onClick={handleMarkAllRead}
-                                className="inline-flex items-center gap-1 text-xs font-medium text-cyan-400 hover:text-cyan-300"
-                            >
-                                <CheckCheck size={13} />
-                                Mark all read
-                            </button>
-                        )}
+
+                        <div className="flex items-center gap-3">
+                            {notifications.some((n) => !n.read) && (
+                                <button
+                                    type="button"
+                                    onClick={handleMarkAllRead}
+                                    className="inline-flex items-center gap-1 text-xs font-medium text-cyan-400 hover:text-cyan-300"
+                                >
+                                    <CheckCheck size={13} />
+                                    Mark all read
+                                </button>
+                            )}
+
+                            {notifications.length > 0 && (
+                                <button
+                                    type="button"
+                                    onClick={handleClearAll}
+                                    disabled={clearing}
+                                    className="inline-flex items-center gap-1 text-xs font-medium text-slate-400 hover:text-red-400 disabled:opacity-50"
+                                >
+                                    <Trash2 size={13} />
+                                    Clear all
+                                </button>
+                            )}
+                        </div>
                     </div>
 
                     <div className="max-h-96 overflow-y-auto">

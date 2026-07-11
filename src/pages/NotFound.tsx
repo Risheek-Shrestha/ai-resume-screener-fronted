@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Compass } from "lucide-react";
+import useAuth from "../hooks/useAuth";
 
 function NotFound() {
+    const { user } = useAuth();
+
+    const homePath =
+        user?.role === "ADMIN"
+            ? "/admin"
+            : "/dashboard";
+
     return (
         <div className="relative flex min-h-[70vh] flex-col items-center justify-center px-6 py-20 text-center text-white">
-
             <div className="flex h-20 w-20 items-center justify-center rounded-full border border-slate-800 bg-slate-900">
                 <Compass className="text-cyan-400" size={36} />
             </div>
@@ -23,9 +30,8 @@ function NotFound() {
             </p>
 
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-
                 <Link
-                    to="/"
+                    to={homePath}
                     className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 font-semibold text-slate-950 transition hover:scale-[1.03] hover:bg-cyan-400"
                 >
                     <ArrowLeft size={18} />
@@ -38,9 +44,7 @@ function NotFound() {
                 >
                     Browse jobs
                 </Link>
-
             </div>
-
         </div>
     );
 }

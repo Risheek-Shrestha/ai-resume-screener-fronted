@@ -104,7 +104,7 @@ function AdminApplications() {
             header: "Application",
             cell: (application) => (
                 <div>
-                    <p className="font-semibold text-white">#{application.id}</p>
+                    <p className="font-semibold text-white">#{application.applicationId}</p>
                     <p className="mt-0.5 text-xs text-slate-500">Resume #{application.resumeId}</p>
                 </div>
             ),
@@ -118,7 +118,7 @@ function AdminApplications() {
         {
             header: "Applied On",
             cell: (application) => (
-                <span className="text-slate-300">{formatDate(application.applicationTime)}</span>
+                <span className="text-slate-300">{formatDate(application.appliedAt)}</span>
             ),
         },
         {
@@ -138,7 +138,7 @@ function AdminApplications() {
                     <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => viewResume(application.id)}
+                        onClick={() => viewResume(application.applicationId)}
                     >
                         <Eye size={14} className="mr-1.5" />
                         Resume
@@ -148,16 +148,16 @@ function AdminApplications() {
                         <>
                             <Button
                                 size="sm"
-                                loading={updatingId === application.id}
-                                onClick={() => changeStatus(application.id, "SHORTLISTED")}
+                                loading={updatingId === application.applicationId}
+                                onClick={() => changeStatus(application.applicationId, "SHORTLISTED")}
                             >
                                 Shortlist
                             </Button>
                             <Button
                                 variant="danger"
                                 size="sm"
-                                loading={updatingId === application.id}
-                                onClick={() => changeStatus(application.id, "REJECTED")}
+                                loading={updatingId === application.applicationId}
+                                onClick={() => changeStatus(application.applicationId, "REJECTED")}
                             >
                                 Reject
                             </Button>
@@ -168,16 +168,16 @@ function AdminApplications() {
                         <>
                             <Button
                                 size="sm"
-                                loading={updatingId === application.id}
-                                onClick={() => changeStatus(application.id, "HIRED")}
+                                loading={updatingId === application.applicationId}
+                                onClick={() => changeStatus(application.applicationId, "HIRED")}
                             >
                                 Hire
                             </Button>
                             <Button
                                 variant="danger"
                                 size="sm"
-                                loading={updatingId === application.id}
-                                onClick={() => changeStatus(application.id, "REJECTED")}
+                                loading={updatingId === application.applicationId}
+                                onClick={() => changeStatus(application.applicationId, "REJECTED")}
                             >
                                 Reject
                             </Button>
@@ -234,7 +234,7 @@ function AdminApplications() {
                     <Table
                         columns={columns}
                         data={applications}
-                        keyField={(application) => application.id}
+                        keyField={(application) => application.applicationId}
                     />
                 </div>
             )}

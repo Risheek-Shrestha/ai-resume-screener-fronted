@@ -11,14 +11,16 @@ import Badge from "../../components/ui/Badge";
 import { getErrorMessage } from "../../utils/getErrorMessage";
 
 function CreateJob() {
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [jobType, setJobType] = useState("");
     const [experienceLevel, setExperienceLevel] = useState("");
 
-    const [applicationStartsAt, setApplicationStartsAt] = useState("");
-    const [applicationDeadline, setApplicationDeadline] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [startTime, setStartTime] = useState("");
+
+    const [deadlineDate, setDeadlineDate] = useState("");
+    const [deadlineTime, setDeadlineTime] = useState("");
 
     const [skills, setSkills] = useState<string[]>([]);
     const [skill, setSkill] = useState("");
@@ -29,33 +31,36 @@ function CreateJob() {
     const [error, setError] = useState("");
 
     const addSkill = () => {
+        const trimmed = skill.trim();
 
-        if (!skill.trim()) return;
+        if (!trimmed) return;
 
-        if (skills.includes(skill.trim())) return;
+        if (skills.includes(trimmed)) return;
 
-        setSkills([...skills, skill.trim()]);
-
+        setSkills([...skills, trimmed]);
         setSkill("");
-
     };
 
     const removeSkill = (index: number) => {
-
-        setSkills(
-            skills.filter((_, i) => i !== index)
-        );
-
+        setSkills(skills.filter((_, i) => i !== index));
     };
 
     const handleSubmit = async () => {
-
         try {
-
             setLoading(true);
 
             setError("");
             setSuccess("");
+
+            const applicationStartsAt =
+                startDate && startTime
+                    ? `${startDate}T${startTime}:00`
+                    : "";
+
+            const applicationDeadline =
+                deadlineDate && deadlineTime
+                    ? `${deadlineDate}T${deadlineTime}:00`
+                    : "";
 
             await createJob({
                 title,
@@ -64,7 +69,7 @@ function CreateJob() {
                 experienceLevel,
                 skills,
                 applicationStartsAt,
-                applicationDeadline
+                applicationDeadline,
             });
 
             setSuccess("Job created successfully.");
@@ -73,26 +78,24 @@ function CreateJob() {
             setDescription("");
             setJobType("");
             setExperienceLevel("");
-            setApplicationStartsAt("");
-            setApplicationDeadline("");
+
+            setStartDate("");
+            setStartTime("");
+
+            setDeadlineDate("");
+            setDeadlineTime("");
+
             setSkills([]);
-
+            setSkill("");
         } catch (err) {
-
             setError(getErrorMessage(err, "Unable to create job."));
-
         } finally {
-
             setLoading(false);
-
         }
-
     };
 
     return (
-
         <div className="mx-auto max-w-2xl px-6 py-10 md:py-16">
-
             <Link
                 to="/admin/jobs"
                 className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-slate-400 transition hover:text-cyan-400"
@@ -104,14 +107,13 @@ function CreateJob() {
             <h1 className="font-display text-4xl font-bold">
                 Create Job
             </h1>
+
             <p className="mt-2 text-slate-400">
                 Post a new opening for candidates to apply to.
             </p>
 
             <Card className="mt-8" padding="lg">
-
                 <div className="space-y-6">
-
                     <Input
                         label="Title"
                         value={title}
@@ -123,6 +125,7 @@ function CreateJob() {
                         <label className="mb-2 block text-sm font-medium text-slate-300">
                             Description
                         </label>
+
                         <textarea
                             rows={8}
                             value={description}
@@ -133,7 +136,6 @@ function CreateJob() {
                     </div>
 
                     <div className="grid gap-6 sm:grid-cols-2">
-
                         <Input
                             label="Job Type"
                             list="job-type-options"
@@ -147,7 +149,7 @@ function CreateJob() {
                             list="experience-level-options"
                             value={experienceLevel}
                             onChange={(e) => setExperienceLevel(e.target.value)}
-                            placeholder="e.g. MID_LEVEL"
+                            placeholder="e.g. MID"
                         />
 
                         <datalist id="job-type-options">
@@ -162,35 +164,60 @@ function CreateJob() {
                             <option value="MID" />
                             <option value="SENIOR" />
                         </datalist>
-
                     </div>
 
-                    <div className="grid gap-6 sm:grid-cols-2">
+                    <div className="space-y-6">
+                        <div>
+                            <h2 className="mb-4 text-lg font-semibold">
+                                Application Starts
+                            </h2>
 
-                        <Input
-                            label="Application Starts At"
-                            type="datetime-local"
-                            value={applicationStartsAt}
-                            onChange={(e) => setApplicationStartsAt(e.target.value)}
-                        />
+                            <div className="grid gap-6 sm:grid-cols-2">
+                                <Input
+                                    label="Date"
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                />
 
-                        <Input
-                            label="Application Deadline"
-                            type="datetime-local"
-                            value={applicationDeadline}
-                            onChange={(e) => setApplicationDeadline(e.target.value)}
-                        />
+                                <Input
+                                    label="Time"
+                                    type="time"
+                                    value={startTime}
+                                    onChange={(e) => setStartTime(e.target.value)}
+                                />
+                            </div>
+                        </div>
 
+                        <div>
+                            <h2 className="mb-4 text-lg font-semibold">
+                                Application Deadline
+                            </h2>
+
+                            <div className="grid gap-6 sm:grid-cols-2">
+                                <Input
+                                    label="Date"
+                                    type="date"
+                                    value={deadlineDate}
+                                    onChange={(e) => setDeadlineDate(e.target.value)}
+                                />
+
+                                <Input
+                                    label="Time"
+                                    type="time"
+                                    value={deadlineTime}
+                                    onChange={(e) => setDeadlineTime(e.target.value)}
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div className="border-t border-slate-800 pt-6">
-
                         <h2 className="text-lg font-semibold">
                             Skills
                         </h2>
 
                         <div className="mt-4 flex gap-3">
-
                             <Input
                                 value={skill}
                                 onChange={(e) => setSkill(e.target.value)}
@@ -212,21 +239,20 @@ function CreateJob() {
                                 <Plus size={16} className="mr-2" />
                                 Add
                             </Button>
-
                         </div>
 
                         {skills.length > 0 && (
                             <div className="mt-4 flex flex-wrap gap-2">
-
                                 {skills.map((skill, index) => (
-
                                     <Badge
                                         key={index}
                                         variant="secondary"
                                         className="gap-2 pr-2"
                                     >
                                         {skill}
+
                                         <button
+                                            type="button"
                                             onClick={() => removeSkill(index)}
                                             className="text-slate-400 hover:text-red-400"
                                             aria-label={`Remove ${skill}`}
@@ -234,12 +260,9 @@ function CreateJob() {
                                             <X size={12} />
                                         </button>
                                     </Badge>
-
                                 ))}
-
                             </div>
                         )}
-
                     </div>
 
                     <Button
@@ -262,15 +285,10 @@ function CreateJob() {
                             {error}
                         </div>
                     )}
-
                 </div>
-
             </Card>
-
         </div>
-
     );
-
 }
 
 export default CreateJob;
