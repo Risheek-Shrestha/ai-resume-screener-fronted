@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /forgot-password
+Allow: /reset-password
+
+# Authenticated / role-gated app areas — not useful to index
+Disallow: /dashboard
+Disallow: /jobs
+Disallow: /resume
+Disallow: /profile
+Disallow: /education
+Disallow: /applications
+Disallow: /admin
+
+Sitemap: https://ai-resume-screener-fronted-three.vercel.app/sitemap.xml
