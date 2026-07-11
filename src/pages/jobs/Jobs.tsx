@@ -256,6 +256,16 @@ function Jobs() {
                                             <Badge variant="secondary">
                                                 {job.experienceLevel}
                                             </Badge>
+                                            {job.userApplicationStatus && job.userApplicationStatus !== "REJECTED" && (
+                                                <Badge variant="success">
+                                                    Already Applied
+                                                </Badge>
+                                            )}
+                                            {job.userApplicationStatus === "REJECTED" && (
+                                                <Badge variant="danger">
+                                                    Previously rejected — apply again
+                                                </Badge>
+                                            )}
                                         </div>
 
                                         <p className="mt-3 text-sm leading-relaxed text-slate-400">

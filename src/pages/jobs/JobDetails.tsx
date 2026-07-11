@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth"
 import type { JobResponse } from "../../types/job";
+import type { ApplicationStatus } from "../../types/application";
 import { getJobsById } from "../../services/jobService";
+import { getMyApplications } from "../../services/applicationService";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
@@ -10,6 +12,7 @@ import {
     BriefcaseBusiness,
     CalendarClock,
     CalendarCheck2,
+    CheckCircle2,
     Layers,
     Plus,
 } from "lucide-react";
@@ -26,7 +29,15 @@ function JobDetails() {
     const [jobs, setJobs] = useState<JobResponse | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    // The user's status on their most recent application to this job
+    // (undefined while loading/unknown, null if they've never applied).
+    const [myStatus, setMyStatus] = useState<ApplicationStatus | null | undefined>(undefined);
     const { id } = useParams();
+
+    // Statuses that mean the user has a still-active application and
+    // shouldn't be able to apply again. REJECTED is excluded on purpose —
+    // rejected applicants can re-apply, e.g. with a new resume.
+    const ACTIVE_STATUSES: ApplicationStatus[] = ["APPLIED", "SHORTLISTED", "HIRED"];
 
     function renderApplyButton(job: JobResponse, isAuthenticated: boolean) {
         if (!isAuthenticated) {
@@ -40,16 +51,6 @@ function JobDetails() {
             );
         }
 
-        if (job.applicationStatus === "OPEN") {
-            return (
-                <Link to={`/jobs/${job.id}/apply`}>
-                    <Button size="lg">
-                        Apply Now
-                        <ArrowRight size={18} className="ml-2" />
-                    </Button>
-                </Link>
-            );
-        }
         if (job.applicationStatus === "NOT_STARTED") {
             return (
                 <Badge variant="warning" className="text-sm">
@@ -62,6 +63,33 @@ function JobDetails() {
                 <Badge variant="danger" className="text-sm">
                     Applications closed
                 </Badge>
+            );
+        }
+
+        if (job.applicationStatus === "OPEN") {
+            // Still loading the user's application history — avoid a flash
+            // of the wrong button.
+            if (myStatus === undefined) {
+                return null;
+            }
+
+            if (myStatus !== null && ACTIVE_STATUSES.includes(myStatus)) {
+                return (
+                    <Button size="lg" disabled>
+                        <CheckCircle2 size={18} className="mr-2" />
+                        Already Applied
+                    </Button>
+                );
+            }
+
+            // Never applied, or previously REJECTED — free to apply again.
+            return (
+                <Link to={`/jobs/${job.id}/apply`}>
+                    <Button size="lg">
+                        {myStatus === "REJECTED" ? "Apply Again" : "Apply Now"}
+                        <ArrowRight size={18} className="ml-2" />
+                    </Button>
+                </Link>
             );
         }
         return null;
@@ -87,6 +115,43 @@ function JobDetails() {
         };
         fetchJobs();
     }, [id]);
+
+    // Look up the user's most recent application for this job so the apply
+    // button can reflect it (Already Applied vs. Apply Now/Apply Again).
+    useEffect(() => {
+        if (!isAuthenticated || !id) {
+            setMyStatus(null);
+            return;
+        }
+
+        const fetchMyStatus = async () => {
+            try {
+                const applications = await getMyApplications();
+                const forThisJob = applications.filter(
+                    (a) => a.jobId === Number(id)
+                );
+
+                if (forThisJob.length === 0) {
+                    setMyStatus(null);
+                    return;
+                }
+
+                // A user can now have multiple applications for the same job
+                // (after being rejected and re-applying) — use the most
+                // recent one.
+                const latest = forThisJob.reduce((a, b) =>
+                    new Date(a.appliedAt) > new Date(b.appliedAt) ? a : b
+                );
+                setMyStatus(latest.status);
+            } catch {
+                // If we can't determine status, default to letting the user
+                // try to apply — the backend still enforces the real rule.
+                setMyStatus(null);
+            }
+        };
+
+        fetchMyStatus();
+    }, [id, isAuthenticated]);
 
     return (
 

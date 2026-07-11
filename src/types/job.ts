@@ -10,6 +10,10 @@ export interface JobResponse {
     applicationStartsAt : string;
     applicationDeadline : string;
     applicationStatus : string;
+    // The current user's latest application status for this job
+    // (APPLIED / SHORTLISTED / HIRED / REJECTED), or null/undefined if they
+    // have never applied. Only populated by the /jobs/open endpoint.
+    userApplicationStatus?: "APPLIED" | "SHORTLISTED" | "HIRED" | "REJECTED" | null;
 }
 
 export interface JobRequest {
