@@ -10,6 +10,9 @@ React + TypeScript frontend for the AI Resume Screener platform. Connects to the
 
 > The backend API runs on Render's free tier and spins down after inactivity — the first request after idle can take up to 50 seconds to respond.
 
+**Demo login** — no need to sign up, use this read-only-friendly account:
+`risheek@12.com` / `risheek12`
+
 ## Tech Stack
 
 - **React 19** + **TypeScript**
