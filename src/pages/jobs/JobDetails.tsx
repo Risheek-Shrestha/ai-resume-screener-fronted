@@ -13,6 +13,7 @@ import {
     CalendarClock,
     CalendarCheck2,
     CheckCircle2,
+    GraduationCap,
     Layers,
     Plus,
 } from "lucide-react";
@@ -212,6 +213,30 @@ function JobDetails() {
                                         {skill}
                                     </Badge>
                                 ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {(jobs.eligibleCourses?.length > 0 || jobs.eligibleSemesters?.length > 0) && (
+                        <div className="mt-6 rounded-xl border border-amber-500/20 bg-amber-500/5 p-4">
+                            <p className="mb-2 flex items-center gap-2 text-sm font-semibold text-amber-300">
+                                <GraduationCap size={16} />
+                                Eligibility
+                            </p>
+                            <div className="flex flex-wrap gap-2 text-sm text-slate-300">
+                                {jobs.eligibleCourses?.length > 0 && (
+                                    <span>
+                                        Open to:{" "}
+                                        {jobs.eligibleCourses.map((c) => c.name).join(", ")}
+                                    </span>
+                                )}
+                                {jobs.eligibleSemesters?.length > 0 && (
+                                    <span>
+                                        {jobs.eligibleCourses?.length > 0 ? " · " : "Open to: "}
+                                        Semester{jobs.eligibleSemesters.length > 1 ? "s" : ""}{" "}
+                                        {jobs.eligibleSemesters.slice().sort((a, b) => a - b).join(", ")}
+                                    </span>
+                                )}
                             </div>
                         </div>
                     )}

@@ -5,6 +5,8 @@ import {
     getJobsById,
     updateJob
 } from "../../services/jobService";
+import { getCourses } from "../../services/courseService";
+import type { Course } from "../../types/course";
 
 import { ArrowLeft, Plus, X } from "lucide-react";
 
@@ -14,6 +16,8 @@ import Button from "../../components/common/Button";
 import Badge from "../../components/ui/Badge";
 import Loader from "../../components/common/Loader";
 import { getErrorMessage } from "../../utils/getErrorMessage";
+
+const SEMESTER_OPTIONS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 function EditJob() {
 
@@ -32,10 +36,34 @@ function EditJob() {
     const [skills, setSkills] = useState<string[]>([]);
     const [skill, setSkill] = useState("");
 
+    const [courses, setCourses] = useState<Course[]>([]);
+    const [eligibleCourseIds, setEligibleCourseIds] = useState<number[]>([]);
+    const [eligibleSemesters, setEligibleSemesters] = useState<number[]>([]);
+
     const [loading, setLoading] = useState(false);
 
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+
+    useEffect(() => {
+        getCourses()
+            .then(setCourses)
+            .catch(() => {
+                // Non-critical — eligibility just won't be settable if this fails.
+            });
+    }, []);
+
+    const toggleCourse = (courseId: number) => {
+        setEligibleCourseIds((prev) =>
+            prev.includes(courseId) ? prev.filter((c) => c !== courseId) : [...prev, courseId]
+        );
+    };
+
+    const toggleSemester = (sem: number) => {
+        setEligibleSemesters((prev) =>
+            prev.includes(sem) ? prev.filter((s) => s !== sem) : [...prev, sem]
+        );
+    };
 
     const loadJob = useCallback(async () => {
 
@@ -56,6 +84,9 @@ function EditJob() {
 
             setApplicationStartsAt(job.applicationStartsAt.substring(0, 16));
             setApplicationDeadline(job.applicationDeadline.substring(0, 16));
+
+            setEligibleCourseIds(job.eligibleCourses?.map((c: Course) => c.id) ?? []);
+            setEligibleSemesters(job.eligibleSemesters ?? []);
 
         } catch {
 
@@ -112,7 +143,9 @@ function EditJob() {
                 experienceLevel,
                 skills,
                 applicationStartsAt,
-                applicationDeadline
+                applicationDeadline,
+                eligibleCourseIds,
+                eligibleSemesters
 
             });
 
@@ -224,6 +257,67 @@ function EditJob() {
                             value={applicationDeadline}
                             onChange={(e) => setApplicationDeadline(e.target.value)}
                         />
+
+                    </div>
+
+                    <div className="border-t border-slate-800 pt-6">
+
+                        <h2 className="text-lg font-semibold">
+                            Eligibility
+                        </h2>
+                        <p className="mt-1 text-sm text-slate-400">
+                            Leave everything unselected to open this job to all students.
+                        </p>
+
+                        <div className="mt-4">
+                            <p className="mb-2 text-sm font-medium text-slate-300">
+                                Eligible Courses
+                            </p>
+                            {courses.length === 0 ? (
+                                <p className="text-sm text-slate-500">
+                                    No courses found.
+                                </p>
+                            ) : (
+                                <div className="flex flex-wrap gap-2">
+                                    {courses.map((course) => (
+                                        <button
+                                            type="button"
+                                            key={course.id}
+                                            onClick={() => toggleCourse(course.id)}
+                                            className={`rounded-full border px-3 py-1.5 text-sm transition ${
+                                                eligibleCourseIds.includes(course.id)
+                                                    ? "border-cyan-500 bg-cyan-500/10 text-cyan-300"
+                                                    : "border-slate-700 text-slate-400 hover:border-slate-600"
+                                            }`}
+                                        >
+                                            {course.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="mt-6">
+                            <p className="mb-2 text-sm font-medium text-slate-300">
+                                Eligible Semesters
+                            </p>
+                            <div className="flex flex-wrap gap-2">
+                                {SEMESTER_OPTIONS.map((sem) => (
+                                    <button
+                                        type="button"
+                                        key={sem}
+                                        onClick={() => toggleSemester(sem)}
+                                        className={`rounded-full border px-3 py-1.5 text-sm transition ${
+                                            eligibleSemesters.includes(sem)
+                                                ? "border-cyan-500 bg-cyan-500/10 text-cyan-300"
+                                                : "border-slate-700 text-slate-400 hover:border-slate-600"
+                                        }`}
+                                    >
+                                        Sem {sem}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
 
                     </div>
 
