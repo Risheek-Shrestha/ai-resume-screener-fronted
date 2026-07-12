@@ -6,6 +6,7 @@ All notable changes to this project are documented here. Format loosely follows 
 
 ### Added
 - SPA fallback rewrite (`vercel.json`) so direct navigation to client-side routes works on Vercel.
+- Course/semester eligibility picker on admin Create/Edit Job forms, and an eligibility notice on the job details page.
 
 ### Fixed
 - Sidebar nav item typing (`exclusive` field) causing a TypeScript build failure.

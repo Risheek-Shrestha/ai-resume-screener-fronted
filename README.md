@@ -32,6 +32,7 @@ React + TypeScript frontend for the AI Resume Screener platform. Connects to the
 - **Profile** — edit profile, manage education history
 - **Applications** — track submitted applications (user side); review, shortlist, hire, or reject applicants (admin side)
 - **Admin panel** — create/edit jobs and courses, manage applications end to end
+- **Job eligibility** — admins can restrict a job to specific courses/semesters when creating or editing it; the job details page shows the restriction to candidates
 
 ## Project Structure
 
